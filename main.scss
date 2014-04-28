@@ -1,0 +1,31 @@
+.background {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-image: url(http://opengameart.org/sites/default/files/map_4.png);
+  background-repeat:repeat-y;
+  background-size: 100% 100%;
+  opacity: .75;
+  
+}
+
+.page-header {
+  text-align: center;
+  background-color: #4676B2;
+  color: #FFEE7D;
+  margin: -2% 0% 0% 0%;
+  padding: .6em;
+}
+
+.list-group {
+  width: 30%;
+  background-image: url(http://opengameart.org/sites/default/files/styles/medium/public/rockwalledges.png);
+  opacity: .75;
+}
+
+.play {
+  background-color: black;
+  height: 40em;
+  width: 60%;
+  margin: 5% 0% 0% 30%;
+}
