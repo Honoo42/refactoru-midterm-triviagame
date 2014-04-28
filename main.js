@@ -158,7 +158,8 @@ Monsters.prototype.monsterGenerator = function() {
 
 	// }
 	// var monsterTrivia = trivia.choiceRandomizer()
-	return trivia;
+	return "You are being attacked by "+monster.name+"! <br>"
+	+trivia;
 };
 
 
