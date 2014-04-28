@@ -1,13 +1,4 @@
-.background {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  background-image: url(http://opengameart.org/sites/default/files/map_4.png);
-  background-repeat:repeat-y;
-  background-size: 100% 100%;
-  opacity: .75;
-  
-}
+
 
 .page-header {
   text-align: center;
@@ -28,4 +19,27 @@
   height: 40em;
   width: 60%;
   margin: 5% 0% 0% 30%;
+}
+
+.generate {
+	margin: 0% 0% 0% 30%;
+}
+
+.btn {
+	z-index: 100;
+	position: absolute;
+}
+.question-area {
+	color: peachpuff;
+}
+
+.background {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-image: url(http://opengameart.org/sites/default/files/map_4.png);
+  background-repeat:repeat-y;
+  background-size: 100% 100%;
+  opacity: .75;
+  
 }

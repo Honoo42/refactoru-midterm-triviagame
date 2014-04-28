@@ -19,18 +19,18 @@ var Character = function (name, job) {
 	// implement hit point system
 };
 
-// array should be three wrong answers that are randomized with correct
-var Trivia = function (str, difficulty, correct, array){
+// wrong should an array of three wrong answers that are randomized with correct
+var Trivia = function (str, difficulty, correct, wrong){
 	this.str = str;
 	this.difficulty= difficulty;
-	this.correct = correct
-	this.array= array
+	this.correct = correct;
+	this.wrong= wrong;
 
 };
 // array of Trivia
-var Category = function (name, array) {
+var Category = function (name, questions) {
 	this.name = name;
-	this.array = array;
+	this.questions = questions;
 };
 // defines the rank of a monster
 var Rank = function(name,health) {
@@ -101,17 +101,71 @@ var blessed = function() {
  // and display the string in the Trivia object
 // the 
 Category.prototype.categorySearch = function() {
-	for (var i = 0; i < this.array.length; i++) {
-		console.log(this.array[i]);
+	for (var i = 0; i < this.questions.length; i++) {
+		console.log(this.questions[i]);
 		
 	};
 	
 };
+// uses underscore js sample function to randomly grab a
+// an item from the array and output it's string
 Category.prototype.triviaOutput = function() {
 	// var selectedTrivia = _.sample(this.array);
 	// selectedTrivia;
-	return _.sample(this.array).str;
+	return _.sample(this.questions).str;
 }
+
+// goes through each question in the array and filters by difficulty
+Category.prototype.triviaDifficulty = function() {
+
+}
+// 					-Trivia Functions-
+// merges the two choice arrays together and randomizes them
+// FUNCTION TO FIX - correctChoice is added multiple times
+Trivia.prototype.choiceRandomizer = function() {
+	var wrongChoices = this.wrong;
+	var correctChoice = this.correct[0];
+	console.log(correctChoice);
+	var choices = wrongChoices.push(correctChoice);
+	return _.shuffle(this.wrong);
+	
+}
+Trivia.prototype.difficultPull = function() {
+	return this.difficulty;
+}
+
+
+
+// 					-Monsters Functions-
+
+// takes a given monster, searches their available source of categories and
+// outputs a random question of the randomly chosen category
+Monsters.prototype.monsterGenerator = function() {
+	var monster = this;
+	var arrayofCategories = this.array;
+	var category = _.sample(arrayofCategories);
+	var questions = category.questions;
+		// run function to filter by difficulty
+		// category = _.filter(category,function(){
+		// 	return this.difficulty <= trivia.
+		// })
+	var triviaObj= _.sample(questions);
+	var trivia = category.triviaOutput();
+	// if (triviaObj.difficulty <= this.difficulty) {
+	// 	return trivia;
+	// }
+	// else{
+
+	// }
+	// var monsterTrivia = trivia.choiceRandomizer()
+	return trivia;
+};
+
+
+// 					-Global Functions-
+var availableMonsters = function(pool){
+			return _.sample(pool);
+} 
 
 
 // 					-Monster Ranks-	
@@ -140,6 +194,7 @@ var kanir = new Character('Kanir',knight);
 	// 					-Trivia Definition-
 var donaldDuckName = new Trivia("What is Donald Duck's middle name?", 2,['Fauntleroy'],['Lavender','Huey','Howard']);
 
+var aladdinTiger = new Trivia("What is the name of Jasmine's pet tiger",1,['Rajah'],['Abu','Iago','Tigger']);
 var pacmanScore = new Trivia("What is the maximum achieveable score in one game of 'Pac-Man'?", 3,['3,333,360'],['999,999','424,242,420','3,000,000']);
 
 var marioOrigin = new Trivia("What was Mario's name in the original Donkey Kong arcade game?",2,['Jumpman'],['Luigi','Toad','He had no name']);
@@ -148,17 +203,25 @@ var gameFIFA2001 = new Trivia("What unusual feature did the game 'FIFA 2001' imp
 
 
 	// 					-Categories Definition-
-var disney = new Category('Disney Trivia',[donaldDuckName]);
+var disney = new Category('Disney Trivia',[donaldDuckName,aladdinTiger]);
 var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,gameFIFA2001]);
-	console.log(_.sample(videoGames.array));
-
+	
 	// 					-Monster Ranks-
 var mook = new Rank('Mook',1);
 	// 					-Monster Definition-
 var goblin = new Monsters('Goblin',[disney],2,mook);
+var troll = new Monsters('Troll',[videoGames,disney],5,mook);
+
+	// 					-Monster Pool-
+	var firstLevel = [goblin,troll];
 // -------------------------DOM Creation------------------
-// $(document).on('ready', function() {  
+$(document).on('ready', function() {  
+	// On click, generates a random question for the given monster
+	$('.button-layout').on('click','.btn', function () {
+		$('.placement').empty();
+		$('.placement').append(availableMonsters(firstLevel).monsterGenerator());
+
+	})
 
 
-
-// });
+});
