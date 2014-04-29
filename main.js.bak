@@ -162,7 +162,7 @@ Monsters.prototype.monsterGenerator = function() {
 	console.log(monster.difficulty);
 	console.log(filteredQuestions);
 	return "You are being attacked by "+monster.name+"! <br>"
-	+triviaObj.str;
+	+trivia;
 };
 
 
