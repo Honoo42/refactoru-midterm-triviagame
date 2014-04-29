@@ -32,6 +32,15 @@
   color: peachpuff;
 }
 
+.answer-btn {
+  display: block;
+  background-color: #BAFFD2;
+  color: blue;
+  height: 2em;
+  width: 30%;
+  border-spacing: 50px;
+}
+
 .background {
   position: fixed;
   height: 100%;

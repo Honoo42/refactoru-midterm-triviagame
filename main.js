@@ -1,3 +1,15 @@
+if (!String.prototype.supplant) {
+    String.prototype.supplant = function (o) {
+        return this.replace(
+            /\{([^{}]*)\}/g,
+            function (a, b) {
+                var r = o[b];
+                return typeof r === 'string' || typeof r === 'number' ? r : a;
+            }
+        );
+    };
+}
+
 // ------------------Constructors----------------------
 // definition is a function that programs the effect of the ability
 var Ability = function (name,definition) {
@@ -55,6 +67,71 @@ var Item = function (name,effect){
 	this.name = name;
 	this.effect = effect;
 }
+
+var Answers = function(Array) {
+	this.Array = Array;
+	var answerChoice1 = Array[0];
+	var answerChoice2 = Array[1];
+	var answerChoice3 = Array[2];
+	var answerChoice4 = Array[3];
+	// return string.split('');
+
+}
+
+// -----------------Prototype Methods---------------------
+Ability.prototype.create =  function(){
+		return $('<div class="ability">{name}</div>'.supplant(this));
+};
+
+Job.prototype.create =  function(){
+		return $('<div class="job">{name}</div>'.supplant(this));
+};
+
+Character.prototype.create =  function(){
+		return $('<div class="character">{name}</div>'.supplant(this));
+};
+
+Trivia.prototype.create =  function(){
+		return $('<div class="trivia">{str}</div>'.supplant(this));
+};
+
+Category.prototype.create =  function(){
+		return $('<div class="category">{name}</div>'.supplant(this));
+};
+
+Rank.prototype.create =  function(){
+		return $('<div class="rank">{name}</div>'.supplant(this));
+};
+
+Monsters.prototype.create =  function(){
+		return $('<div class="monsters">{name}</div>'.supplant(this));
+};
+
+Locations.prototype.create =  function(){
+		return $('<div class="locations">{name}</div>'.supplant(this));
+};
+
+Item.prototype.create =  function(){
+		return $('<div class="item">{name}</div>'.supplant(this));
+};
+
+Answers.prototype.create1 =  function(){
+	var answersOnDisplay ={answerChoice1:this.Array[0]};
+		return $('<button class="answers answer-btn">{answerChoice1}</button>'.supplant(answersOnDisplay));
+	};
+Answers.prototype.create2 =  function(){
+	var answersOnDisplay ={answerChoice2:this.Array[1]};
+		return $('<button class="answers answer-btn">{answerChoice2}</button>'.supplant(answersOnDisplay));
+	};	
+Answers.prototype.create3 =  function(){
+	var answersOnDisplay ={answerChoice3:this.Array[2]};
+		return $('<button class="answers answer-btn">{answerChoice3}</button>'.supplant(answersOnDisplay));
+	};
+Answers.prototype.create4 =  function(){
+	var answersOnDisplay ={answerChoice4:this.Array[3]};
+		return $('<button class="answers answer-btn">{answerChoice4}</button>'.supplant(answersOnDisplay));
+	};
+// };
 // -----------------Functions-----------------------------
 
 
@@ -125,9 +202,31 @@ Category.prototype.triviaDifficulty = function() {
 Trivia.prototype.choiceRandomizer = function() {
 	var wrongChoices = this.wrong;
 	var correctChoice = this.correct[0];
-	console.log(correctChoice);
+	// console.log(correctChoice);
 	var choices = wrongChoices.push(correctChoice);
-	return _.shuffle(this.wrong);
+	// shuffles the array of answer choices
+	var shuffledChoices = _.shuffle(this.wrong);
+	// makes sure that the choices displayed to the player are all unique indexes
+	var uniqueChoices = _.uniq(shuffledChoices);
+	// var displayChoices = new Answers(uniqueChoices);
+		
+	// gives each possible answer it's own array
+	var answerChoice1 = uniqueChoices[0];
+	var answerChoice2 = uniqueChoices[1];
+	var answerChoice3 = uniqueChoices[2];
+	var answerChoice4 = uniqueChoices[3];
+
+	// console.log(answerChoice1);
+	// console.log(answerChoice2);
+	// console.log(answerChoice3);
+	// console.log(answerChoice4);
+	return uniqueChoices;
+	// return answerChoice1+"<br>"+
+	// 		answerChoice2+"<br>"+
+	// 		answerChoice3+"<br>"+
+	// 		answerChoice4
+
+
 	
 }
 Trivia.prototype.difficultPull = function() {
@@ -137,33 +236,28 @@ Trivia.prototype.difficultPull = function() {
 
 
 // 					-Monsters Functions-
-
+var fixedQuestions = [];
 // takes a given monster, searches their available source of categories and
 // outputs a random question of the randomly chosen category
-Monsters.prototype.monsterGenerator = function() {
+Monsters.prototype.encounterGenerator = function() {
 	var monster = this;
 	var arrayofCategories = this.array;
 	var category = _.sample(arrayofCategories);
 	var questions = category.questions;
-		// run function to filter by difficulty
-		// category = _.filter(category,function(){
-		// 	return this.difficulty <= trivia.
-		// })
+		// run _.reject to filter by difficulty
 		var filteredQuestions = _.reject(questions,function (question){return question.difficulty > monster.difficulty});
 	var triviaObj= _.sample(filteredQuestions);
-	var trivia = category.triviaOutput();
-	// if (triviaObj.difficulty <= this.difficulty) {
-	// 	return trivia;
-	// }
-	// else{
-
-	// }
+	// fixedQuestions = triviaObj.choiceRandomizer();
+	// console.log(fixedQuestions);
+	// var trivia = category.triviaOutput();
 	// var monsterTrivia = trivia.choiceRandomizer()
-	console.log(monster.difficulty);
-	console.log(filteredQuestions);
-	return "You are being attacked by "+monster.name+"! <br>"
-	+triviaObj.str;
+	// console.log(monster.difficulty);
+	// console.log(filteredQuestions);
+	return triviaObj;
+	// return triviaObj.str
+	// +" <br> "+fixedQuestions;
 };
+
 
 
 // 					-Global Functions-
@@ -171,7 +265,9 @@ var availableMonsters = function(pool){
 			return _.sample(pool);
 } 
 
-
+var encounterDisplay = function () {
+	return
+}
 // 					-Monster Ranks-	
 
 //Mooks are the lowest level of Encounter, should be warm-ups
@@ -218,12 +314,39 @@ var troll = new Monsters('Troll',[videoGames,disney],2,mook);
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
+
 // -------------------------DOM Creation------------------
 $(document).on('ready', function() {  
 	// On click, generates a random question for the given monster
 	$('.button-layout').on('click','.btn', function () {
+		
+		// On click, randomly selects a monster from the pool of monsters given
+		var currentMonster = availableMonsters(firstLevel)
+		// Choose a question from that monsters pool
+		var activeEncounter = currentMonster.encounterGenerator();
+		var possibleChoices = activeEncounter.choiceRandomizer();
+
+		var displayChoices = new Answers(possibleChoices);
+		console.log(displayChoices);
+	
+		var triviaString = activeEncounter.str;
+		var test = displayChoices.create1();
+	// var btnChoices = 
 		$('.placement').empty();
-		$('.placement').append(availableMonsters(firstLevel).monsterGenerator());
+		$('.placement').append("You are being questioned by a ").append(currentMonster.create());
+		$('.placement').append(activeEncounter.create());
+		$('.placement').append(test);
+		$('.placement').append(displayChoices.create2());
+		$('.placement').append(displayChoices.create3());
+		$('.placement').append(displayChoices.create4());
+
+		// $('.placement').append($('<button class="btn">test</button>'));
+
+
+		// $('.encounter-string').append(displayChoices.create());
+
+		// $('.placement').append(fixedQuestions.create());
+			// .append('.btn');
 
 	})
 

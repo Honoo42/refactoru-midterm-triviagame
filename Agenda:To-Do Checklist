@@ -4,9 +4,13 @@ Monday April 28
 2.Start site design/ lightbox implementation research /check
 3.Test buttons /check
 4. Create a function to loop through and output a question at random /check
+4.b. Added difficulty filtering
 
 
-
+Tuesday April 29
+1.Generate the answer choices / check
+2.Create buttons for the answer choices
+3.Add classes for the buttons to know which is correct
 
 
 Things to think about:
