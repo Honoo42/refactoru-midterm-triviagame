@@ -9,8 +9,8 @@ Monday April 28
 
 Tuesday April 29
 1.Generate the answer choices / check
-2.Create buttons for the answer choices
-3.Add classes for the buttons to know which is correct
+2.Create buttons for the answer choices /check
+3.Add classes for the buttons to know which is correct /check
 
 
 Things to think about:
@@ -19,3 +19,8 @@ Things to think about:
 	Define difficulty scale
 (4/28-10:12AM) How to define locations and their abilities/restrictions;
 	Character abilities, items implementation
+
+
+Challenges:
+1.Create buttons for answer choices, breaking down functions into smaller pieces to strike at specific objects
+2.Adding classes to the buttons, have to target and had classes to keys before they are created

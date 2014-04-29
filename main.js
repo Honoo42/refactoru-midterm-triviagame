@@ -25,8 +25,6 @@ var Job = function (name, ability, health) {
 var Character = function (name, job) {
 	this.name = name;
 	this.job = job;
-	// job.ability = ability;
-	// job.health = health;
 	this.items = [];
 	// implement hit point system
 };
@@ -92,6 +90,11 @@ Character.prototype.create =  function(){
 };
 
 Trivia.prototype.create =  function(){
+		// console.log($(this.correct).addClass('correct'));
+		$(this.correct).addClass('correct');
+		$(this.wrong).addClass('wrong');
+		// console.log($(this.wrong).addClass('wrong'));
+
 		return $('<div class="trivia">{str}</div>'.supplant(this));
 };
 
@@ -104,7 +107,7 @@ Rank.prototype.create =  function(){
 };
 
 Monsters.prototype.create =  function(){
-		return $('<div class="monsters">{name}</div>'.supplant(this));
+		return $('<div class="monsters">{name} with a maximum difficulty of {difficulty}</div>'.supplant(this));
 };
 
 Locations.prototype.create =  function(){
@@ -116,20 +119,27 @@ Item.prototype.create =  function(){
 };
 
 Answers.prototype.create1 =  function(){
-	var answersOnDisplay ={answerChoice1:this.Array[0]};
-		return $('<button class="answers answer-btn">{answerChoice1}</button>'.supplant(answersOnDisplay));
+	// console.log(this.Array[0][0], this.Array[0][1]);
+	
+	var answersOnDisplay ={answerChoice1:this.Array[0][0], correctAnswer:this.Array[0][1].toString() };
+
+		return $('<button class="answers answer-btn answer1" data-answer="{correctAnswer}">{answerChoice1}</button>'.supplant(answersOnDisplay));
+
 	};
 Answers.prototype.create2 =  function(){
-	var answersOnDisplay ={answerChoice2:this.Array[1]};
-		return $('<button class="answers answer-btn">{answerChoice2}</button>'.supplant(answersOnDisplay));
+	var answersOnDisplay ={answerChoice2:this.Array[1][0], correctAnswer:this.Array[1][1].toString() };
+		return $('<button class="answers answer-btn answer2" data-answer="{correctAnswer}">{answerChoice2}</button>'.supplant(answersOnDisplay));
+
 	};	
 Answers.prototype.create3 =  function(){
-	var answersOnDisplay ={answerChoice3:this.Array[2]};
-		return $('<button class="answers answer-btn">{answerChoice3}</button>'.supplant(answersOnDisplay));
+	var answersOnDisplay ={answerChoice3:this.Array[2][0], correctAnswer:this.Array[2][1].toString() };
+		return $('<button class="answers answer-btn answer3" data-answer="{correctAnswer}">{answerChoice3}</button>'.supplant(answersOnDisplay));
+
 	};
 Answers.prototype.create4 =  function(){
-	var answersOnDisplay ={answerChoice4:this.Array[3]};
-		return $('<button class="answers answer-btn">{answerChoice4}</button>'.supplant(answersOnDisplay));
+	var answersOnDisplay ={answerChoice4:this.Array[3][0], correctAnswer:this.Array[3][1].toString() };
+		return $('<button class="answers answer-btn answer4" data-answer="{correctAnswer}">{answerChoice4}</button>'.supplant(answersOnDisplay));
+
 	};
 // };
 // -----------------Functions-----------------------------
@@ -201,9 +211,11 @@ Category.prototype.triviaDifficulty = function() {
 // FUNCTION TO FIX - correctChoice is added multiple times
 Trivia.prototype.choiceRandomizer = function() {
 	var wrongChoices = this.wrong;
-	var correctChoice = this.correct[0];
+	var correctChoice = this.correct;
 	// console.log(correctChoice);
 	var choices = wrongChoices.push(correctChoice);
+	console.log(wrongChoices);
+	// correctChoice.addClass(correct);
 	// shuffles the array of answer choices
 	var shuffledChoices = _.shuffle(this.wrong);
 	// makes sure that the choices displayed to the player are all unique indexes
@@ -292,14 +304,14 @@ var kanir = new Character('Kanir',knight);
 
 
 	// 					-Trivia Definition-
-var donaldDuckName = new Trivia("What is Donald Duck's middle name?", 2,['Fauntleroy'],['Lavender','Huey','Howard']);
+var donaldDuckName = new Trivia("What is Donald Duck's middle name?", 2,['Fauntleroy',true],[['Lavender',false],['Huey',false],['Howard',false]]);
 
-var aladdinTiger = new Trivia("What is the name of Jasmine's pet tiger",1,['Rajah'],['Abu','Iago','Tigger']);
-var pacmanScore = new Trivia("What is the maximum achieveable score in one game of 'Pac-Man'?", 3,['3,333,360'],['999,999','424,242,420','3,000,000']);
+var aladdinTiger = new Trivia("What is the name of Jasmine's pet tiger",1,['Rajah',true],[['Abu',false],['Iago',false],['Tigger',false]]);
+var pacmanScore = new Trivia("What is the maximum achieveable score in one game of 'Pac-Man'?", 3,['3,333,360',true],[['999,999',false],['424,242,420',false],['3,000,000',false]]);
 
-var marioOrigin = new Trivia("What was Mario's name in the original Donkey Kong arcade game?",2,['Jumpman'],['Luigi','Toad','He had no name']);
+var marioOrigin = new Trivia("What was Mario's name in the original Donkey Kong arcade game?",2,['Jumpman',true],[['Luigi',false],['Toad',false],['He had no name',false]]);
 
-var gameFIFA2001 = new Trivia("What unusual feature did the game 'FIFA 2001' implement?",5,['A Scratch and Sniff CD'],['You could use other CD-ROMs to generate players','It had a mode to play as the coaches and referees','It would lock the player out during half-time and encourage them to go outside']);
+var gameFIFA2001 = new Trivia("What unusual feature did the game 'FIFA 2001' implement?",5,['A Scratch and Sniff CD',true],[['You could use other CD-ROMs to generate players',false],['It had a mode to play as the coaches and referees',false],['It would lock the player out during half-time and encourage them to go outside',false]]);
 
 
 	// 					-Categories Definition-
@@ -308,26 +320,28 @@ var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,ga
 	
 	// 					-Monster Ranks-
 var mook = new Rank('Mook',1);
+var elite = new Rank('Elite',3);
 	// 					-Monster Definition-
 var goblin = new Monsters('Goblin',[disney],2,mook);
-var troll = new Monsters('Troll',[videoGames,disney],2,mook);
+var troll = new Monsters('Troll',[disney,videoGames],5,elite);
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
 
 // -------------------------DOM Creation------------------
 $(document).on('ready', function() {  
-	// On click, generates a random question for the given monster
-	$('.button-layout').on('click','.btn', function () {
+	$('.placement').append(kanir.create());
+	var postAnEncounter = function () {
 		
 		// On click, randomly selects a monster from the pool of monsters given
 		var currentMonster = availableMonsters(firstLevel)
 		// Choose a question from that monsters pool
+		console.log(currentMonster.rank.health);
 		var activeEncounter = currentMonster.encounterGenerator();
 		var possibleChoices = activeEncounter.choiceRandomizer();
 
 		var displayChoices = new Answers(possibleChoices);
-		console.log(displayChoices);
+		// console.log(displayChoices);
 	
 		var triviaString = activeEncounter.str;
 		var test = displayChoices.create1();
@@ -335,20 +349,28 @@ $(document).on('ready', function() {
 		$('.placement').empty();
 		$('.placement').append("You are being questioned by a ").append(currentMonster.create());
 		$('.placement').append(activeEncounter.create());
-		$('.placement').append(test);
+		var testState = $('.placement').append(test);
 		$('.placement').append(displayChoices.create2());
 		$('.placement').append(displayChoices.create3());
 		$('.placement').append(displayChoices.create4());
+	
+		};
+	// On click, generates a random question for the given monster
+	$('.button-layout').on('click','.btn', function () {
+		postAnEncounter();
 
-		// $('.placement').append($('<button class="btn">test</button>'));
+		});
 
+		// on click, adds the correct or wrong class to the corresponding class
+		$(document).on('click','.answer-btn',function(){
+			$('.answer-btn[data-answer="true"]').addClass('correct');
+			$('.answer-btn[data-answer="false"]').addClass('wrong');
+			_.delay(postAnEncounter,3000);
 
-		// $('.encounter-string').append(displayChoices.create());
+		
+		});
+		
 
-		// $('.placement').append(fixedQuestions.create());
-			// .append('.btn');
-
-	})
 
 
 });
