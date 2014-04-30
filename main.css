@@ -83,16 +83,17 @@
 .answer4 {
   background-color: #7BCC2B;
   color: #FFF65B;
+  bo
 }
 
-.correct {
+/*.correct {
   border: green 3px solid;
 }
 
 .wrong {
   border: firebrick 2px dashed;
   opacity: .4;
-}
+}*/
 
 .background {
   position: fixed;

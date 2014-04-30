@@ -21,6 +21,7 @@ var Job = function (name, ability, health) {
 	this.name = name;
 	this.ability = ability;
 	this.health = health;
+	// var currentHealth = this.health;
 };
 var Character = function (name, job) {
 	this.name = name;
@@ -56,6 +57,8 @@ var Monsters = function(name, array, difficulty, rank, health) {
 	this.difficulty = difficulty;
 	this.rank = rank;
 	this.health = health;
+	// var currentHealth = this.health;
+	
 };
 
 var Locations = function (name) {
@@ -73,7 +76,7 @@ var Answers = function(Array) {
 	var answerChoice2 = Array[1];
 	var answerChoice3 = Array[2];
 	var answerChoice4 = Array[3];
-	// return string.split('');
+	
 
 }
 
@@ -325,8 +328,11 @@ var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,ga
 var mook = new Rank('Mook');
 var elite = new Rank('Elite');
 	// 					-Monster Definition-
+
 var goblin = new Monsters('Goblin',[disney],2,mook,1);
 var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
+
+
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
@@ -336,7 +342,7 @@ $(document).on('ready', function() {
 	$('.generate').hide();
 	$('.reset-game').hide();
 	$('.character').hide()
-
+	// var currentMonster = true;
 	var theKnight = kanir.create();
 	var theWizard = devaio.create();
 // 				-----------DOM Variables---------------
@@ -383,18 +389,42 @@ $(document).on('ready', function() {
 	}
 	// the function to generate a new encounter
 	var postAnEncounter = function () {
-		
+		console.log("Test");
 		// On click, randomly selects a monster from the pool of monsters given
-		var currentMonster = availableMonsters(firstLevel)
+		currentMonster = availableMonsters(firstLevel)
 		// Choose a question from that monsters pool
-		console.log(currentMonster.rank.health);
 		var activeEncounter = currentMonster.encounterGenerator();
 		// Of the question choosen, randomizes the answer choices
 		var possibleChoices = activeEncounter.choiceRandomizer();
 		// Constructs the answers into objects
 		var displayChoices = new Answers(possibleChoices);
-
+		var monsterHealth = currentMonster.health;
+		console.log(currentMonster);
 		placeArea.empty();
+		// placeArea.append(
+		// 	"You are being questioned by a ", 
+		// 	currentMonster.create()
+		// 	);
+		
+		// if (monsterHealth === 0) {
+		// 	console.log ("Victory!")
+		// 	placeArea.empty ();
+		// 	placeArea.append("PREPARE FOR THE NEXT BATTLE!");
+		// 	_.delay(postAnEncounter,3000);
+		// }
+		// else{
+		// 	placeArea.empty ();
+		// 	placeArea.append(
+		// 	"You are being questioned by a ", 
+		// 	currentMonster.create(),
+		// 	activeEncounter.create(),
+		// 	displayChoices.create1(),
+		// 	displayChoices.create2(),
+		// 	displayChoices.create3(),
+		// 	displayChoices.create4()
+		// );
+		// 	console.log("This is just a bite!");
+		// }
 		
 		placeArea.append(
 			"You are being questioned by a ", 
@@ -406,20 +436,61 @@ $(document).on('ready', function() {
 			displayChoices.create4()
 		);
 		monsterInfo(currentMonster);
+		answerAddClass();
+		console.log(monsterHealth);
+		
+
+
+
 	};
-		// adds class to answers and automatically creates a new encounter after 3 seconds
+	// var generateQuestions = function () {
+	// 			placeArea.append(
+	
+	// 		activeEncounter.create(),
+	// 		displayChoices.create1(),
+	// 		displayChoices.create2(),
+	// 		displayChoices.create3(),
+	// 		displayChoices.create4()
+	// 	);
+
+	// }
+	// adds class to answers and automatically creates a new encounter after 3 seconds
 	var answerAddClass = function () {
 		$('.answer-btn[data-answer="true"]').addClass('correct');
 		$('.answer-btn[data-answer="false"]').addClass('wrong');
-		_.delay(postAnEncounter,3000);
+		// _.delay(postAnEncounter,3000);
 	}
 	var resetGame = function () {
 		characterDisplay.empty();
 		monsterDisplay.empty();
 		placeArea.empty();
+
 		$('.generate').hide();
 		$('.reset-game').hide();
 		$('.start-game').show();
+	};
+	var highlightCorrect = function () {
+		$(this).css({
+				'border-color':'red',
+				'border-width': '5px'
+				});
+			$('.wrong').css({
+				'border-color':'blue',
+				'border-width': '5px',
+				'opacity': '0.5'
+			});
+		};
+	var highlightWrong = function () {
+			$('.correct').css({
+				'border-color':'orange',
+				'border-width': '5px'
+				});
+			$('.wrong').css({
+				'border-color':'blue',
+				'border-width': '5px',
+				'opacity': '0.5'
+			});
+
 	};
 
 	// 			--------------DOM CREATION AND MANIPULATION--------------
@@ -430,13 +501,16 @@ $(document).on('ready', function() {
 	});
 
 		
-		
+		// On a click of The Knight during character select, it loads Kanir's stats
 		$('.character-buttons').on('click','.btn-kanir',(function() {
+			currentCharacter = kanir;
 			characterInfo(kanir);
 			characterChoice();
 		})
 		);
+		// On a click of The Wizard during character select, it loads Devaio's stats
 		$('.btn-devaio').click(function () {
+			currentCharacter = devaio;
 			characterInfo(devaio);
 			characterChoice();
 		});
@@ -446,16 +520,34 @@ $(document).on('ready', function() {
 	buttonLayout.on('click','.generate', function () {
 		postAnEncounter();
 	});
+	// $(document).on('click','.test', function (){
+	// 	generateQuestions();
+	// });
+		// If the player chooses the right answer, it subtracts a hit point from the monster
+	$(document).on('click','.answer-btn[data-answer="true"]',function(){
+			console.log("CORRECT");
+			currentMonster.health --
+			console.log(currentMonster.health)
+			highlightCorrect();
+			// if (currentMonster.health === 0) {
 
-		// on click, adds the correct or wrong class to the corresponding class
-	$(document).on('click','.answer-btn',function(){
-			answerAddClass();
-			console.log(this);
-		if (this === $('.answer-btn[data-answer="true"]')) {console.log("RIGHT ON!")} else{console.log("WRONG!")};
-		// $('.answer-btn[data-answer="true"]').addClass('correct');
-		// $('.answer-btn[data-answer="false"]').addClass('wrong');
-		console.log(this);
+			// };
+			_.delay(postAnEncounter,3000);
+
+
 	});
+	// If the answer chosen is wrong, it subtracts health from the player
+	$(document).on('click','.answer-btn[data-answer="false"]',function(){
+			console.log("WRONG");
+			currentCharacter.job.health --
+			console.log(currentCharacter.job.health)
+			highlightWrong();
+				_.delay(postAnEncounter,3000);
+	});
+
+
+
+	// Reset the game
 	buttonLayout.on('click','.reset-game', function (){
 		resetGame();
 	});	
