@@ -13,6 +13,12 @@ Tuesday April 29
 3.Add classes for the buttons to know which is correct /check
 
 
+Wednesday April 30
+1.Implement character choice /check
+2.Try to implement health system
+3.Generate more trivia and monsters
+4.Tune up front-end /check
+
 Things to think about:
 (4/28-9:55AM) How to randomize answer choices, craft answer choices
 (4/28-10:05AM) How do monster ranks affect the gameplay, maybe it defines the range of difficulty for questions (A Mid-Boss can do questions from difficulty 6 and down to 3, but a Boss will only give questions of difficulty 6 to difficulty 5);

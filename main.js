@@ -43,18 +43,19 @@ var Category = function (name, questions) {
 	this.questions = questions;
 };
 // defines the rank of a monster
-var Rank = function(name,health) {
+var Rank = function(name) {
 	this.name = name;
-	this.health = health;
+	// this.health = health;
 }
 // array holds the categories that the monster can access questions from
 // difficulty is the maximum level of difficulty that they can acess
 // rank can be Mook, Elite, Mid-Boss, Boss, End-Boss
-var Monsters = function(name, array, difficulty, rank) {
+var Monsters = function(name, array, difficulty, rank, health) {
 	this.name = name;
 	this.array = array;
 	this.difficulty = difficulty;
 	this.rank = rank;
+	this.health = health;
 };
 
 var Locations = function (name) {
@@ -117,7 +118,8 @@ Locations.prototype.create =  function(){
 Item.prototype.create =  function(){
 		return $('<div class="item">{name}</div>'.supplant(this));
 };
-
+// Using supplant to generate the answer choices and data-attribute to assign the 'correct' class to the 
+// right answer after all the answers are suffled
 Answers.prototype.create1 =  function(){
 	// console.log(this.Array[0][0], this.Array[0][1]);
 	
@@ -301,6 +303,7 @@ var monk = new Job('Monk',blessed,8);
 
 	// 					-Character Definition-
 var kanir = new Character('Kanir',knight);
+var devaio = new Character('Devaio',wizard);
 
 
 	// 					-Trivia Definition-
@@ -319,18 +322,66 @@ var disney = new Category('Disney Trivia',[donaldDuckName,aladdinTiger]);
 var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,gameFIFA2001]);
 	
 	// 					-Monster Ranks-
-var mook = new Rank('Mook',1);
-var elite = new Rank('Elite',3);
+var mook = new Rank('Mook');
+var elite = new Rank('Elite');
 	// 					-Monster Definition-
-var goblin = new Monsters('Goblin',[disney],2,mook);
-var troll = new Monsters('Troll',[disney,videoGames],5,elite);
+var goblin = new Monsters('Goblin',[disney],2,mook,1);
+var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
 
 // -------------------------DOM Creation------------------
 $(document).on('ready', function() {  
-	$('.placement').append(kanir.create());
+	$('.generate').hide();
+	$('.reset-game').hide();
+	$('.character').hide()
+
+	var theKnight = kanir.create();
+	var theWizard = devaio.create();
+// 				-----------DOM Variables---------------
+	var placeArea = $('.placement');
+	var characterDisplay = $('.character-display');
+	
+	var monsterDisplay = $('.encounter-string');
+	var buttonLayout = $('.button-layout');
+	
+
+// 			----------------DOM FUNCTIONS---------------
+	var characterSelect = function () {
+		$('.start-game').hide();
+		$('.btn-kanir').show();
+		$('.btn-devaio').show();
+
+	};
+
+	var startGame = function () {
+		characterSelect();
+		// $('.generate').show();
+		// $('.reset-game').show();
+		$('.start-game').hide();
+	};
+	var characterInfo = function (currentCharacter) {
+			characterDisplay.append(
+			currentCharacter.name+"<br>",
+			"Character Job: "+currentCharacter.job.name+"<br>",
+			"Current Health: "+currentCharacter.job.health)
+	};
+	var monsterInfo = function (currentMonster) {
+		monsterDisplay.empty();
+		monsterDisplay.append(
+			currentMonster.name+"<br>",
+			"Max Trivia Diificulty: "+currentMonster.difficulty+"<br>",
+			"Monster Rank: "+currentMonster.rank.name+"<br>",
+			"Current Health: "+currentMonster.health
+			);
+	};
+	var characterChoice = function () {
+		$('.character').hide();
+		$('.generate').show();
+		$('.reset-game').show();
+	}
+	// the function to generate a new encounter
 	var postAnEncounter = function () {
 		
 		// On click, randomly selects a monster from the pool of monsters given
@@ -338,38 +389,85 @@ $(document).on('ready', function() {
 		// Choose a question from that monsters pool
 		console.log(currentMonster.rank.health);
 		var activeEncounter = currentMonster.encounterGenerator();
+		// Of the question choosen, randomizes the answer choices
 		var possibleChoices = activeEncounter.choiceRandomizer();
-
+		// Constructs the answers into objects
 		var displayChoices = new Answers(possibleChoices);
-		// console.log(displayChoices);
-	
-		var triviaString = activeEncounter.str;
-		var test = displayChoices.create1();
-	// var btnChoices = 
-		$('.placement').empty();
-		$('.placement').append("You are being questioned by a ").append(currentMonster.create());
-		$('.placement').append(activeEncounter.create());
-		var testState = $('.placement').append(test);
-		$('.placement').append(displayChoices.create2());
-		$('.placement').append(displayChoices.create3());
-		$('.placement').append(displayChoices.create4());
-	
-		};
-	// On click, generates a random question for the given monster
-	$('.button-layout').on('click','.btn', function () {
-		postAnEncounter();
 
+		placeArea.empty();
+		
+		placeArea.append(
+			"You are being questioned by a ", 
+			currentMonster.create(),
+			activeEncounter.create(),
+			displayChoices.create1(),
+			displayChoices.create2(),
+			displayChoices.create3(),
+			displayChoices.create4()
+		);
+		monsterInfo(currentMonster);
+	};
+		// adds class to answers and automatically creates a new encounter after 3 seconds
+	var answerAddClass = function () {
+		$('.answer-btn[data-answer="true"]').addClass('correct');
+		$('.answer-btn[data-answer="false"]').addClass('wrong');
+		_.delay(postAnEncounter,3000);
+	}
+	var resetGame = function () {
+		characterDisplay.empty();
+		monsterDisplay.empty();
+		placeArea.empty();
+		$('.generate').hide();
+		$('.reset-game').hide();
+		$('.start-game').show();
+	};
+
+	// 			--------------DOM CREATION AND MANIPULATION--------------
+
+		// Start button starts the game and hides itself
+	buttonLayout.on('click','.start-game', function (){
+		startGame();
+	});
+
+		
+		
+		$('.character-buttons').on('click','.btn-kanir',(function() {
+			characterInfo(kanir);
+			characterChoice();
+		})
+		);
+		$('.btn-devaio').click(function () {
+			characterInfo(devaio);
+			characterChoice();
 		});
+		
+		// characterInfo(this);
+	// On click, generates a random question for the given monster
+	buttonLayout.on('click','.generate', function () {
+		postAnEncounter();
+	});
 
 		// on click, adds the correct or wrong class to the corresponding class
-		$(document).on('click','.answer-btn',function(){
-			$('.answer-btn[data-answer="true"]').addClass('correct');
-			$('.answer-btn[data-answer="false"]').addClass('wrong');
-			_.delay(postAnEncounter,3000);
+	$(document).on('click','.answer-btn',function(){
+			answerAddClass();
+			console.log(this);
+		if (this === $('.answer-btn[data-answer="true"]')) {console.log("RIGHT ON!")} else{console.log("WRONG!")};
+		// $('.answer-btn[data-answer="true"]').addClass('correct');
+		// $('.answer-btn[data-answer="false"]').addClass('wrong');
+		console.log(this);
+	});
+	buttonLayout.on('click','.reset-game', function (){
+		resetGame();
+	});	
 
-		
-		});
-		
+	// // If player clicks on the right choice, display CONGRATULATIONS, if wrong, display WRONG!!
+	// $(document).on('click', '.answer-btn', function () {
+	// 	var choice = this;
+	// 	if (this === $('.answer-btn[data-answer="true"]')) {console.log("RIGHT ON!")} else{console.log("WRONG!")};
+	// 	// $('.answer-btn[data-answer="true"]').addClass('correct');
+	// 	// $('.answer-btn[data-answer="false"]').addClass('wrong');
+	// 	console.log(choice);
+	// })
 
 
 

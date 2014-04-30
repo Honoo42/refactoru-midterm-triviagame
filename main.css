@@ -8,29 +8,55 @@
 
 .list-group {
   width: 30%;
-  background-image: url(http://opengameart.org/sites/default/files/styles/medium/public/rockwalledges.png);
+  /*background-image: url(http://opengameart.org/sites/default/files/styles/medium/public/rockwalledges.png);*/
   opacity: .75;
 }
-
+/*CSS Related to the Game Area of The Game*/
+.game-area{
+  /*position: absolute;*/
+  /*width: 100%;*/
+}
 .play {
   background-color: black;
-  height: 40em;
-  width: 60%;
-  margin: 5% 0% 0% 30%;
+  /*height: 40em;*/
+  /*width: 50%;*/
+  /*margin: -20.3% 0% 0% 30%;*/
 }
-
-.generate {
-  margin: 0% 0% 0% 30%;
-}
-
-.btn {
-  z-index: 100;
-  position: absolute;
+.character-display{
+  background-color: blue;
+  /*height: 20em;*/
+  /*width: 20%;*/
+  /*margin: 5% 0% 0% 10%;*/
 }
 
 .question-area {
   color: peachpuff;
 }
+
+.encounter-string{
+  background-color: red;
+  /*height: 20em;*/
+  /*width: 15%;*/
+  /*margin: -20.3% 0% 0% 0%;*/
+}
+
+/*Game Control Buttons*/
+.button-layout {
+  text-align: center;
+};
+
+.btn {
+  z-index: 100;
+  /*position: absolute;*/
+};
+
+.character-buttons {
+  text-align: center;
+};
+
+
+
+/*Answer Buttons*/
 
 .answer-btn {
   display: block;
@@ -76,4 +102,5 @@
   background-repeat: repeat-y;
   background-size: 100% 100%;
   opacity: .75;
+  z-index: -1;
 }
