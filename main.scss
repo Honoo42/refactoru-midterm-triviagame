@@ -33,6 +33,37 @@
 	color: peachpuff;
 }
 
+.answer-btn {
+  display: block;
+  height: 2em;
+  width: 100%;
+  border-spacing: 50px;
+}
+.answer1 {
+  background-color: #B2441F;
+  color: #38B297;
+}
+.answer2 {
+  background-color: #FFFBD5;
+  color: #5938B2;
+}
+.answer3 {
+  background-color: #B20065;
+  color: #FF5BB7;
+}
+.answer4 {
+  background-color: #7BCC2B;
+  color: #FFF65B;
+}
+
+.correct {
+  border: green 3px solid;
+
+}
+.wrong {
+  border: firebrick 2px dashed;
+  opacity: .4;
+}
 .background {
   position: fixed;
   height: 100%;
