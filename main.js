@@ -328,11 +328,25 @@ var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,ga
 var mook = new Rank('Mook');
 var elite = new Rank('Elite');
 	// 					-Monster Definition-
+<<<<<<< HEAD
 
 var goblin = new Monsters('Goblin',[disney],2,mook,1);
 var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
 
 
+=======
+<<<<<<< HEAD
+var goblin = new Monsters('Goblin',[disney],2,mook,1);
+var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
+=======
+var goblin = new Monsters('Goblin',[disney],2,mook);
+<<<<<<< HEAD
+var troll = new Monsters('Troll',[videoGames,disney],4,mook);
+=======
+var troll = new Monsters('Troll',[disney,videoGames],5,elite);
+>>>>>>> 142d489ed7d04723c1d34622e5d6245f82f55c13
+>>>>>>> 0e3388ec839bb3ecdc49c33198d9bb2c77bad333
+>>>>>>> 6bf8e6e7376d7a826da9be756baf000d5995d96c
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
