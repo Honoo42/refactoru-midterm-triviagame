@@ -214,7 +214,7 @@ var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,ga
 var mook = new Rank('Mook',1);
 	// 					-Monster Definition-
 var goblin = new Monsters('Goblin',[disney],2,mook);
-var troll = new Monsters('Troll',[videoGames,disney],2,mook);
+var troll = new Monsters('Troll',[videoGames,disney],4,mook);
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll];
