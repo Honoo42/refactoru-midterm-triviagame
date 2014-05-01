@@ -338,28 +338,24 @@ var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
 	var firstLevel = [goblin,troll];
 
 // -------------------------DOM Creation------------------
+
 $(document).on('ready', function() {  
 	$('.generate').hide();
 	$('.reset-game').hide();
 	$('.character').hide()
-	// var currentMonster = true;
+	
 	var theKnight = kanir.create();
 	var theWizard = devaio.create();
 // 				-----------DOM Variables---------------
+	
 	var placeArea = $('.placement');
 	var characterDisplay = $('.character-display');
 	
 	var monsterDisplay = $('.encounter-string');
 	var buttonLayout = $('.button-layout');
 
-	// On click, randomly selects a monster from the pool of monsters given
-	// var currentMonster = availableMonsters(firstLevel);
-	// console.log(currentMonster);
-	// var activeEncounter = currentMonster.encounterGenerator();
-	// console.log(activeEncounter);
-	// var possibleChoices = activeEncounter.choiceRandomizer();
-	// var displayChoices = new Answers(possibleChoices);
 // 			----------------DOM FUNCTIONS---------------
+	
 	var characterSelect = function () {
 		$('.start-game').hide();
 		$('.btn-kanir').show();
@@ -395,20 +391,41 @@ $(document).on('ready', function() {
 	}
 	
 	var updateHealth = function () {
-	// var currentMonHealth = currentMonster.health;
-
 		monsterDisplay.empty();
+		characterDisplay.empty();
 		monsterInfo(currentMonster);
-		// monsterDisplay.append(
-			// "<br> Maximum Health: "+currentMonHealth
-			// );
+		characterInfo(currentCharacter);
 	}
+
 	// the function to generate a new encounter
-	var postAnEncounter = function () {
-		console.log("Test");
-		// On click, randomly selects a monster from the pool of monsters given
-		currentMonster = availableMonsters(firstLevel)
+	var pickAMonster = function () {	
+		currentThreat = firstLevel[0];			
+			 if (currentThreat.health === 0) 
+				{
+				firstLevel.shift();
+				}
+			if (firstLevel.length <=0) 
+				{
+					endGameCheck();
+				}	
+		currentThreat = firstLevel[0];
+			
+		currentMonster = currentThreat;
+			
+		return currentMonster;
+	};
 	
+	// Checks to see if the pool of monsters is empty, and if so, displays a 
+	// victory message and resets the game after 5 seconds
+	var endGameCheck = function () {
+		if(firstLevel.length <= 0){
+				placeArea.empty();
+				placeArea.append("You Have Beat the game!");
+				_.delay(resetGame,5000);
+		};
+	};
+	// Function to generate questions from the current monster
+	var startEncounter = function (){
 		// Choose a question from that monsters pool
 		var activeEncounter = currentMonster.encounterGenerator();
 	
@@ -417,10 +434,7 @@ $(document).on('ready', function() {
 	
 		// Constructs the answers into objects
 		var displayChoices = new Answers(possibleChoices);
-	// var currentMonHealth = currentMonster.health;
-		
-	
-		console.log(currentMonster);
+
 		placeArea.empty();
 		
 		placeArea.append(
@@ -434,12 +448,62 @@ $(document).on('ready', function() {
 		);
 		monsterInfo(currentMonster);
 		answerAddClass();
-
-		
-
-
-
 	};
+	// Function that picks a monster and if a valid monster is available, generates questions
+	// based on that monster's stats
+	var postAnEncounter = function() {
+		// endGameCheck();
+		var chris = pickAMonster();
+		if(chris != undefined){
+		startEncounter();
+		};
+			// 
+	};
+
+	// THIS VERSION WORKS AND IS STABLE
+	// var postAnEncounter = function () {
+	// 	// On click, randomly selects a monster from the pool of monsters given
+	// 	// currentMonster = availableMonsters(firstLevel),
+		
+		
+	// 		currentThreat = firstLevel[0];
+	// 		if (currentThreat.health === 0) {
+	// 		firstLevel.shift();
+	// 		};
+	// 		currentThreat = firstLevel[0];
+	// 		if(currentThreat === undefined){
+	// 			placeArea.empty();
+	// 			placeArea.append("You Have Passed This Level!");
+	// 		}
+	// 		console.log(currentThreat);
+	// 		currentMonster = currentThreat;
+	
+		
+	// 	// Choose a question from that monsters pool
+	// 	var activeEncounter = currentMonster.encounterGenerator();
+	
+	// 	// Of the question choosen, randomizes the answer choices
+	// 	var possibleChoices = activeEncounter.choiceRandomizer();
+	
+	// 	// Constructs the answers into objects
+	// 	var displayChoices = new Answers(possibleChoices);
+
+	// 	placeArea.empty();
+		
+	// 	placeArea.append(
+	// 		"You are being questioned by a ", 
+	// 		currentMonster.create(),
+	// 		activeEncounter.create(),
+	// 		displayChoices.create1(),
+	// 		displayChoices.create2(),
+	// 		displayChoices.create3(),
+	// 		displayChoices.create4()
+	// 	);
+	// 	monsterInfo(currentMonster);
+	// 	answerAddClass();
+	// };
+
+
 	// Displays a new question when run that keeps the current monster in the match
 	// and updates the monsters health as the turns resolve. If the monster is at 0 health
 	// it displays a congratulations message and moves to the next monster in the pool
@@ -463,28 +527,32 @@ $(document).on('ready', function() {
 			displayChoices.create3(),
 			displayChoices.create4()
 		);
-			
 			updateHealth();
-			// 	monsterDisplay.append(
-			// "<br>Current Health: "+currentMonster.health
-			// );
 		if (currentMonster.health === 0) {
 			placeArea.empty();
 			placeArea.append("You Are Victorious!");
-			_.delay(postAnEncounter,3000);
+			_.delay(postAnEncounter,2000);
 		};
+		if (currentCharacter.job.health === 0) {
+			placeArea.empty();
+			placeArea.append("You Have Been DEFEATED!");
+			_.delay(resetGame,5000);
+		}
 	};
 
 	// adds class to answers and automatically creates a new encounter after 3 seconds
 	var answerAddClass = function () {
 		$('.answer-btn[data-answer="true"]').addClass('correct');
 		$('.answer-btn[data-answer="false"]').addClass('wrong');
-		// _.delay(postAnEncounter,3000);
-	}
+	};
+	// Resets the game and activates hard mode
 	var resetGame = function () {
 		characterDisplay.empty();
 		monsterDisplay.empty();
 		placeArea.empty();
+	goblin.health = 2;
+	troll.health = 5;
+		firstLevel=[troll,goblin];
 
 		$('.generate').hide();
 		$('.reset-game').hide();
@@ -578,14 +646,6 @@ $(document).on('ready', function() {
 		resetGame();
 	});	
 
-	// // If player clicks on the right choice, display CONGRATULATIONS, if wrong, display WRONG!!
-	// $(document).on('click', '.answer-btn', function () {
-	// 	var choice = this;
-	// 	if (this === $('.answer-btn[data-answer="true"]')) {console.log("RIGHT ON!")} else{console.log("WRONG!")};
-	// 	// $('.answer-btn[data-answer="true"]').addClass('correct');
-	// 	// $('.answer-btn[data-answer="false"]').addClass('wrong');
-	// 	console.log(choice);
-	// })
 
 
 
