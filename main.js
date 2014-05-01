@@ -94,10 +94,9 @@ Character.prototype.create =  function(){
 };
 
 Trivia.prototype.create =  function(){
-		// console.log($(this.correct).addClass('correct'));
+	
 		$(this.correct).addClass('correct');
 		$(this.wrong).addClass('wrong');
-		// console.log($(this.wrong).addClass('wrong'));
 
 		return $('<div class="trivia">{str}</div>'.supplant(this));
 };
@@ -124,7 +123,6 @@ Item.prototype.create =  function(){
 // Using supplant to generate the answer choices and data-attribute to assign the 'correct' class to the 
 // right answer after all the answers are suffled
 Answers.prototype.create1 =  function(){
-	// console.log(this.Array[0][0], this.Array[0][1]);
 	
 	var answersOnDisplay ={answerChoice1:this.Array[0][0], correctAnswer:this.Array[0][1].toString() };
 
@@ -153,8 +151,18 @@ Answers.prototype.create4 =  function(){
 			//      -Class Ability Definitions-
 
 // Knights can negate a point of damage from an incorrect guess
-var block = function (){
-	return false;
+var block = function (probablity){
+	// var probablity = Math.random();
+	console.log(probablity);
+	if (probablity >= 0.75) {
+		playerTakesHit = currentCharacter.job.health ++ ;
+	}
+	else
+	{
+		var parry = 'You missed the block!';
+	};
+	
+	console.log(parry);
 };
 // Rogues use their cunning to sometimes deal a critical hit
 // to a monster when they get a question right
@@ -217,10 +225,8 @@ Category.prototype.triviaDifficulty = function() {
 Trivia.prototype.choiceRandomizer = function() {
 	var wrongChoices = this.wrong;
 	var correctChoice = this.correct;
-	// console.log(correctChoice);
 	var choices = wrongChoices.push(correctChoice);
-	// console.log(wrongChoices);
-	// correctChoice.addClass(correct);
+
 	// shuffles the array of answer choices
 	var shuffledChoices = _.shuffle(this.wrong);
 	// makes sure that the choices displayed to the player are all unique indexes
@@ -233,18 +239,7 @@ Trivia.prototype.choiceRandomizer = function() {
 	var answerChoice3 = uniqueChoices[2];
 	var answerChoice4 = uniqueChoices[3];
 
-	// console.log(answerChoice1);
-	// console.log(answerChoice2);
-	// console.log(answerChoice3);
-	// console.log(answerChoice4);
 	return uniqueChoices;
-	// return answerChoice1+"<br>"+
-	// 		answerChoice2+"<br>"+
-	// 		answerChoice3+"<br>"+
-	// 		answerChoice4
-
-
-	
 }
 Trivia.prototype.difficultPull = function() {
 	return this.difficulty;
@@ -263,15 +258,7 @@ Monsters.prototype.encounterGenerator = function() {
 		// run _.reject to filter by difficulty
 		var filteredQuestions = _.reject(questions,function (question){return question.difficulty > monster.difficulty});
 	var triviaObj= _.sample(filteredQuestions);
-	// fixedQuestions = triviaObj.choiceRandomizer();
-	// console.log(fixedQuestions);
-	// var trivia = category.triviaOutput();
-	// var monsterTrivia = trivia.choiceRandomizer()
-	// console.log(monster.difficulty);
-	// console.log(filteredQuestions);
 	return triviaObj;
-	// return triviaObj.str
-	// +" <br> "+fixedQuestions;
 };
 
 
@@ -281,9 +268,6 @@ var availableMonsters = function(pool){
 			return _.sample(pool);
 } 
 
-var encounterDisplay = function () {
-	return
-}
 // 					-Monster Ranks-	
 
 //Mooks are the lowest level of Encounter, should be warm-ups
@@ -417,8 +401,6 @@ $(document).on('ready', function() {
 
 	var startGame = function () {
 		characterSelect();
-		// $('.generate').show();
-		// $('.reset-game').show();
 		$('.start-game').hide();
 	};
 	var characterInfo = function (currentCharacter) {
@@ -448,7 +430,7 @@ $(document).on('ready', function() {
 		monsterInfo(currentMonster);
 		characterInfo(currentCharacter);
 	}
-
+	
 	// the function to generate a new encounter
 	var pickAMonster = function () {	
 		currentThreat = firstLevel[0];			
@@ -504,12 +486,10 @@ $(document).on('ready', function() {
 	// Function that picks a monster and if a valid monster is available, generates questions
 	// based on that monster's stats
 	var postAnEncounter = function() {
-		// endGameCheck();
 		var chris = pickAMonster();
 		if(chris != undefined){
 		startEncounter();
 		};
-			// 
 	};
 
 	// THIS VERSION WORKS AND IS STABLE
@@ -567,29 +547,28 @@ $(document).on('ready', function() {
 	
 		// Constructs the answers into objects
 		var displayChoices = new Answers(possibleChoices);
-	// var currentMonHealth = currentMonster.health;
 
-				placeArea.empty();
-				placeArea.append(
-			"You are still being attacked by a ",
-			currentMonster.create(),
-			activeEncounter.create(),
-			displayChoices.create1(),
-			displayChoices.create2(),
-			displayChoices.create3(),
-			displayChoices.create4()
-		);
+			placeArea.empty();
+			placeArea.append(
+					"You are still being attacked by a ",
+					currentMonster.create(),
+					activeEncounter.create(),
+					displayChoices.create1(),
+					displayChoices.create2(),
+					displayChoices.create3(),
+					displayChoices.create4()
+				);
 			updateHealth();
-		if (currentMonster.health === 0) {
-			placeArea.empty();
-			placeArea.append("You Are Victorious!");
-			_.delay(postAnEncounter,2000);
-		};
-		if (currentCharacter.job.health === 0) {
-			placeArea.empty();
-			placeArea.append("You Have Been DEFEATED!");
-			_.delay(resetGame,5000);
-		}
+			if (currentMonster.health === 0) {
+				placeArea.empty();
+				placeArea.append("You Are Victorious!");
+				_.delay(postAnEncounter,2000);
+			};
+			if (currentCharacter.job.health === 0) {
+				placeArea.empty();
+				placeArea.append("You Have Been DEFEATED!");
+				_.delay(resetGame,5000);
+			}
 	};
 
 	// adds class to answers and automatically creates a new encounter after 3 seconds
@@ -670,15 +649,12 @@ $(document).on('ready', function() {
 
 		// If the player chooses the right answer, it subtracts a hit point from the monster
 	$(document).on('click','.answer-btn[data-answer="true"]',function(){
-	// var currentMonHealth = currentMonster.health;
-	// 		console.log(currentMonHealth);
+	var monsterTakesHit = currentMonster.health -- ;
 			console.log("CORRECT");
-			currentMonster.health -- ;
+			// currentMonster.health -- ;
+			monsterTakesHit;
 			console.log(currentMonster.health)
 			highlightCorrect();
-			// if (currentMonster.health === 0) {
-
-			// };
 			_.delay(generateQuestions,3000);
 
 
@@ -686,10 +662,17 @@ $(document).on('ready', function() {
 	// If the answer chosen is wrong, it subtracts health from the player
 	$(document).on('click','.answer-btn[data-answer="false"]',function(){
 			console.log("WRONG");
-			currentCharacter.job.health --
+			var playerTakesHit = currentCharacter.job.health -- ;
+			probablity = Math.random();
+			if (currentCharacter.job.ability.name === "Block") {
+			block(probablity);
+			};
+			// currentCharacter.job.health --
+			playerTakesHit;
 			console.log(currentCharacter.job.health)
 			highlightWrong();
 				_.delay(generateQuestions,3000);
+
 	});
 
 
