@@ -153,26 +153,28 @@ Answers.prototype.create4 =  function(){
 // Knights can negate a point of damage from an incorrect guess
 var block = function (probablity){
 	// var probablity = Math.random();
-	console.log(probablity);
+	// console.log(probablity);
 	if (probablity >= 0.75) {
 		playerTakesHit = currentCharacter.job.health ++ ;
 	}
-	else
-	{
-		var parry = 'You missed the block!';
-	};
-	
-	console.log(parry);
 };
 // Rogues use their cunning to sometimes deal a critical hit
 // to a monster when they get a question right
-var cunning = function(){
-	return false;
+var cunning = function(probablity){
+	if (probablity >= 0.75) {
+		currentMonster.health = currentMonster.health - 1;
+	}
+
 };
 // Wizards can use their high wisdom and intuition to eliminate two wrong answers 
 // when the round  begins
-var intuition = function(){ 
-	return false;
+var intuition = function(probablity){ 
+	if (probablity >= 0.75) {
+		wrongChoices.shift();
+		wrongChoices.shift();
+		return wrongChoices;
+	}
+
 };
 
 // Sorceress use their intelligence and cleverness to access the monsters
@@ -223,7 +225,16 @@ Category.prototype.triviaDifficulty = function() {
 // merges the two choice arrays together and randomizes them
 // FUNCTION TO FIX - correctChoice is added multiple times
 Trivia.prototype.choiceRandomizer = function() {
+	var probablity = Math.random();
+	// console.log(probablity);
+	
+
 	var wrongChoices = this.wrong;
+	// console.log (wrongChoices);
+	if (currentCharacter.job.ability.name === "Intuition") {
+		intuition(probablity);
+	};
+	// console.log(wrongChoices);
 	var correctChoice = this.correct;
 	var choices = wrongChoices.push(correctChoice);
 
@@ -278,11 +289,13 @@ var availableMonsters = function(pool){
 // ----------------------Variables-----------------------
 	// 					-Ability Definition-
 	var knightBlock = new Ability('Block',block());
+	var rogueCunning = new Ability('Cunning',cunning());
+	var wizardIntuition = new Ability('Intuition', intuition());
     //                  -Character Job Definition-
 
 var knight = new Job('Knight',knightBlock,10);
-var rogue = new Job('Rogue',cunning,8);
-var wizard = new Job('Wizard',intuition,6);
+var rogue = new Job('Rogue',rogueCunning,8);
+var wizard = new Job('Wizard',wizardIntuition,6);
 var sorceress = new Job('Sorceress',cleverness,6);
 var bard = new Job('Bard',dazzle,8);
 var monk = new Job('Monk',blessed,8);
@@ -290,6 +303,7 @@ var monk = new Job('Monk',blessed,8);
 	// 					-Character Definition-
 var kanir = new Character('Kanir',knight);
 var devaio = new Character('Devaio',wizard);
+var shadow = new Character('Shadow',rogue);
 
 
 	// 					-Trivia Definition-
@@ -382,6 +396,7 @@ $(document).on('ready', function() {
 	
 	var theKnight = kanir.create();
 	var theWizard = devaio.create();
+	var theRogue = shadow.create();
 // 				-----------DOM Variables---------------
 	
 	var placeArea = $('.placement');
@@ -396,6 +411,7 @@ $(document).on('ready', function() {
 		$('.start-game').hide();
 		$('.btn-kanir').show();
 		$('.btn-devaio').show();
+		$('.btn-shadow').show();
 
 	};
 
@@ -434,7 +450,7 @@ $(document).on('ready', function() {
 	// the function to generate a new encounter
 	var pickAMonster = function () {	
 		currentThreat = firstLevel[0];			
-			 if (currentThreat.health === 0) 
+			 if (currentThreat.health <= 0) 
 				{
 				firstLevel.shift();
 				}
@@ -559,16 +575,17 @@ $(document).on('ready', function() {
 					displayChoices.create4()
 				);
 			updateHealth();
-			if (currentMonster.health === 0) {
+			if (currentMonster.health <= 0) {
 				placeArea.empty();
 				placeArea.append("You Are Victorious!");
 				_.delay(postAnEncounter,2000);
 			};
-			if (currentCharacter.job.health === 0) {
+			if (currentCharacter.job.health <= 0) {
 				placeArea.empty();
 				placeArea.append("You Have Been DEFEATED!");
 				_.delay(resetGame,5000);
 			}
+			answerAddClass();
 	};
 
 	// adds class to answers and automatically creates a new encounter after 3 seconds
@@ -635,6 +652,13 @@ $(document).on('ready', function() {
 			characterInfo(devaio);
 			characterChoice();
 		});
+
+		// On a click of The Rogue during character select, it loads Shadow's stats
+		$('.btn-shadow').click(function () {
+			currentCharacter = shadow;
+			characterInfo(shadow);
+			characterChoice();
+		});
 		
 	
 	// On click, generates a random question for the given monster
@@ -651,9 +675,17 @@ $(document).on('ready', function() {
 	$(document).on('click','.answer-btn[data-answer="true"]',function(){
 	var monsterTakesHit = currentMonster.health -- ;
 			console.log("CORRECT");
-			// currentMonster.health -- ;
+			var probablity = Math.random();
+			console.log(probablity);
+			console.log(currentCharacter.job.ability.name);
+			if (currentCharacter.job.ability.name === "Cunning") {
+			cunning(probablity);
+			console.log(cunning);
+			};
+
 			monsterTakesHit;
 			console.log(currentMonster.health)
+			
 			highlightCorrect();
 			_.delay(generateQuestions,3000);
 
