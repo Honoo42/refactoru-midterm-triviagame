@@ -21,7 +21,7 @@ var Job = function (name, ability, health) {
 	this.name = name;
 	this.ability = ability;
 	this.health = health;
-	// var currentHealth = this.health;
+	
 };
 var Character = function (name, job) {
 	this.name = name;
@@ -46,7 +46,7 @@ var Category = function (name, questions) {
 // defines the rank of a monster
 var Rank = function(name) {
 	this.name = name;
-	// this.health = health;
+	
 }
 // array holds the categories that the monster can access questions from
 // difficulty is the maximum level of difficulty that they can acess
@@ -57,7 +57,7 @@ var Monsters = function(name, array, difficulty, rank, health) {
 	this.difficulty = difficulty;
 	this.rank = rank;
 	this.health = health;
-	// var currentHealth = this.health;
+	
 	
 };
 
@@ -219,7 +219,7 @@ Trivia.prototype.choiceRandomizer = function() {
 	var correctChoice = this.correct;
 	// console.log(correctChoice);
 	var choices = wrongChoices.push(correctChoice);
-	console.log(wrongChoices);
+	// console.log(wrongChoices);
 	// correctChoice.addClass(correct);
 	// shuffles the array of answer choices
 	var shuffledChoices = _.shuffle(this.wrong);
@@ -253,7 +253,6 @@ Trivia.prototype.difficultPull = function() {
 
 
 // 					-Monsters Functions-
-var fixedQuestions = [];
 // takes a given monster, searches their available source of categories and
 // outputs a random question of the randomly chosen category
 Monsters.prototype.encounterGenerator = function() {
@@ -352,8 +351,14 @@ $(document).on('ready', function() {
 	
 	var monsterDisplay = $('.encounter-string');
 	var buttonLayout = $('.button-layout');
-	
 
+	// On click, randomly selects a monster from the pool of monsters given
+	// var currentMonster = availableMonsters(firstLevel);
+	// console.log(currentMonster);
+	// var activeEncounter = currentMonster.encounterGenerator();
+	// console.log(activeEncounter);
+	// var possibleChoices = activeEncounter.choiceRandomizer();
+	// var displayChoices = new Answers(possibleChoices);
 // 			----------------DOM FUNCTIONS---------------
 	var characterSelect = function () {
 		$('.start-game').hide();
@@ -380,7 +385,7 @@ $(document).on('ready', function() {
 			currentMonster.name+"<br>",
 			"Max Trivia Diificulty: "+currentMonster.difficulty+"<br>",
 			"Monster Rank: "+currentMonster.rank.name+"<br>",
-			"Current Health: "+currentMonster.health
+			"Health: "+currentMonster.health
 			);
 	};
 	var characterChoice = function () {
@@ -388,44 +393,35 @@ $(document).on('ready', function() {
 		$('.generate').show();
 		$('.reset-game').show();
 	}
+	
+	var updateHealth = function () {
+	// var currentMonHealth = currentMonster.health;
+
+		monsterDisplay.empty();
+		monsterInfo(currentMonster);
+		// monsterDisplay.append(
+			// "<br> Maximum Health: "+currentMonHealth
+			// );
+	}
 	// the function to generate a new encounter
 	var postAnEncounter = function () {
 		console.log("Test");
 		// On click, randomly selects a monster from the pool of monsters given
 		currentMonster = availableMonsters(firstLevel)
+	
 		// Choose a question from that monsters pool
 		var activeEncounter = currentMonster.encounterGenerator();
+	
 		// Of the question choosen, randomizes the answer choices
 		var possibleChoices = activeEncounter.choiceRandomizer();
+	
 		// Constructs the answers into objects
 		var displayChoices = new Answers(possibleChoices);
-		var monsterHealth = currentMonster.health;
+	// var currentMonHealth = currentMonster.health;
+		
+	
 		console.log(currentMonster);
 		placeArea.empty();
-		// placeArea.append(
-		// 	"You are being questioned by a ", 
-		// 	currentMonster.create()
-		// 	);
-		
-		// if (monsterHealth === 0) {
-		// 	console.log ("Victory!")
-		// 	placeArea.empty ();
-		// 	placeArea.append("PREPARE FOR THE NEXT BATTLE!");
-		// 	_.delay(postAnEncounter,3000);
-		// }
-		// else{
-		// 	placeArea.empty ();
-		// 	placeArea.append(
-		// 	"You are being questioned by a ", 
-		// 	currentMonster.create(),
-		// 	activeEncounter.create(),
-		// 	displayChoices.create1(),
-		// 	displayChoices.create2(),
-		// 	displayChoices.create3(),
-		// 	displayChoices.create4()
-		// );
-		// 	console.log("This is just a bite!");
-		// }
 		
 		placeArea.append(
 			"You are being questioned by a ", 
@@ -438,23 +434,47 @@ $(document).on('ready', function() {
 		);
 		monsterInfo(currentMonster);
 		answerAddClass();
-		console.log(monsterHealth);
+
 		
 
 
 
 	};
-	// var generateQuestions = function () {
-	// 			placeArea.append(
+	// Displays a new question when run that keeps the current monster in the match
+	// and updates the monsters health as the turns resolve. If the monster is at 0 health
+	// it displays a congratulations message and moves to the next monster in the pool
+	var generateQuestions = function () {
+		var activeEncounter = currentMonster.encounterGenerator();
 	
-	// 		activeEncounter.create(),
-	// 		displayChoices.create1(),
-	// 		displayChoices.create2(),
-	// 		displayChoices.create3(),
-	// 		displayChoices.create4()
-	// 	);
+		// Of the question choosen, randomizes the answer choices
+		var possibleChoices = activeEncounter.choiceRandomizer();
+	
+		// Constructs the answers into objects
+		var displayChoices = new Answers(possibleChoices);
+	// var currentMonHealth = currentMonster.health;
 
-	// }
+				placeArea.empty();
+				placeArea.append(
+			"You are still being attacked by a ",
+			currentMonster.create(),
+			activeEncounter.create(),
+			displayChoices.create1(),
+			displayChoices.create2(),
+			displayChoices.create3(),
+			displayChoices.create4()
+		);
+			
+			updateHealth();
+			// 	monsterDisplay.append(
+			// "<br>Current Health: "+currentMonster.health
+			// );
+		if (currentMonster.health === 0) {
+			placeArea.empty();
+			placeArea.append("You Are Victorious!");
+			_.delay(postAnEncounter,3000);
+		};
+	};
+
 	// adds class to answers and automatically creates a new encounter after 3 seconds
 	var answerAddClass = function () {
 		$('.answer-btn[data-answer="true"]').addClass('correct');
@@ -516,24 +536,29 @@ $(document).on('ready', function() {
 			characterChoice();
 		});
 		
-		// characterInfo(this);
+	
 	// On click, generates a random question for the given monster
 	buttonLayout.on('click','.generate', function () {
 		postAnEncounter();
 	});
-	// $(document).on('click','.test', function (){
-	// 	generateQuestions();
-	// });
+	
+
+	buttonLayout.on('click','.test', function () {
+		generateQuestions();
+	});
+
 		// If the player chooses the right answer, it subtracts a hit point from the monster
 	$(document).on('click','.answer-btn[data-answer="true"]',function(){
+	// var currentMonHealth = currentMonster.health;
+	// 		console.log(currentMonHealth);
 			console.log("CORRECT");
-			currentMonster.health --
+			currentMonster.health -- ;
 			console.log(currentMonster.health)
 			highlightCorrect();
 			// if (currentMonster.health === 0) {
 
 			// };
-			_.delay(postAnEncounter,3000);
+			_.delay(generateQuestions,3000);
 
 
 	});
@@ -543,7 +568,7 @@ $(document).on('ready', function() {
 			currentCharacter.job.health --
 			console.log(currentCharacter.job.health)
 			highlightWrong();
-				_.delay(postAnEncounter,3000);
+				_.delay(generateQuestions,3000);
 	});
 
 
