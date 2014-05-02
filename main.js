@@ -21,6 +21,7 @@ var Job = function (name, ability, health) {
 	this.name = name;
 	this.ability = ability;
 	this.health = health;
+	
 };
 var Character = function (name, job) {
 	this.name = name;
@@ -43,18 +44,21 @@ var Category = function (name, questions) {
 	this.questions = questions;
 };
 // defines the rank of a monster
-var Rank = function(name,health) {
+var Rank = function(name) {
 	this.name = name;
-	this.health = health;
+	
 }
 // array holds the categories that the monster can access questions from
 // difficulty is the maximum level of difficulty that they can acess
 // rank can be Mook, Elite, Mid-Boss, Boss, End-Boss
-var Monsters = function(name, array, difficulty, rank) {
+var Monsters = function(name, array, difficulty, rank, health) {
 	this.name = name;
 	this.array = array;
 	this.difficulty = difficulty;
 	this.rank = rank;
+	this.health = health;
+	
+	
 };
 
 var Locations = function (name) {
@@ -72,7 +76,7 @@ var Answers = function(Array) {
 	var answerChoice2 = Array[1];
 	var answerChoice3 = Array[2];
 	var answerChoice4 = Array[3];
-	// return string.split('');
+	
 
 }
 
@@ -90,10 +94,9 @@ Character.prototype.create =  function(){
 };
 
 Trivia.prototype.create =  function(){
-		// console.log($(this.correct).addClass('correct'));
+	
 		$(this.correct).addClass('correct');
 		$(this.wrong).addClass('wrong');
-		// console.log($(this.wrong).addClass('wrong'));
 
 		return $('<div class="trivia">{str}</div>'.supplant(this));
 };
@@ -117,9 +120,9 @@ Locations.prototype.create =  function(){
 Item.prototype.create =  function(){
 		return $('<div class="item">{name}</div>'.supplant(this));
 };
-
+// Using supplant to generate the answer choices and data-attribute to assign the 'correct' class to the 
+// right answer after all the answers are suffled
 Answers.prototype.create1 =  function(){
-	// console.log(this.Array[0][0], this.Array[0][1]);
 	
 	var answersOnDisplay ={answerChoice1:this.Array[0][0], correctAnswer:this.Array[0][1].toString() };
 
@@ -148,17 +151,29 @@ Answers.prototype.create4 =  function(){
 			//      -Class Ability Definitions-
 
 // Knights can negate a point of damage from an incorrect guess
-var block = function (){
-	return false;
+var block = function (probablity){
+	// var probablity = Math.random();
+	// console.log(probablity);
+	if (probablity >= 0.75) {
+		playerTakesHit = currentCharacter.job.health ++ ;
+	}
 };
 // Rogues use their cunning to sometimes deal a critical hit
 // to a monster when they get a question right
-var cunning = function(){
-	return false;
+var cunning = function(probablity){
+	if (probablity >= 0.75) {
+		currentMonster.health = currentMonster.health - 1;
+	}
+
 };
 // Wizards can use their high wisdom and intuition to eliminate two wrong answers 
 // when the round  begins
-var intuition = function(){ 
+var intuition = function(probablity){ 
+	// if (probablity >= 0.75) {
+	// 	wrongChoices.shift();
+	// 	wrongChoices.shift();
+	// 	return wrongChoices;
+	// }
 	return false;
 };
 
@@ -210,12 +225,19 @@ Category.prototype.triviaDifficulty = function() {
 // merges the two choice arrays together and randomizes them
 // FUNCTION TO FIX - correctChoice is added multiple times
 Trivia.prototype.choiceRandomizer = function() {
+	var probablity = Math.random();
+	// console.log(probablity);
+	
+
 	var wrongChoices = this.wrong;
+	// console.log (wrongChoices);
+	if (currentCharacter.job.ability.name === "Intuition") {
+		intuition(probablity);
+	};
+	// console.log(wrongChoices);
 	var correctChoice = this.correct;
-	// console.log(correctChoice);
 	var choices = wrongChoices.push(correctChoice);
-	console.log(wrongChoices);
-	// correctChoice.addClass(correct);
+
 	// shuffles the array of answer choices
 	var shuffledChoices = _.shuffle(this.wrong);
 	// makes sure that the choices displayed to the player are all unique indexes
@@ -228,18 +250,7 @@ Trivia.prototype.choiceRandomizer = function() {
 	var answerChoice3 = uniqueChoices[2];
 	var answerChoice4 = uniqueChoices[3];
 
-	// console.log(answerChoice1);
-	// console.log(answerChoice2);
-	// console.log(answerChoice3);
-	// console.log(answerChoice4);
 	return uniqueChoices;
-	// return answerChoice1+"<br>"+
-	// 		answerChoice2+"<br>"+
-	// 		answerChoice3+"<br>"+
-	// 		answerChoice4
-
-
-	
 }
 Trivia.prototype.difficultPull = function() {
 	return this.difficulty;
@@ -248,7 +259,6 @@ Trivia.prototype.difficultPull = function() {
 
 
 // 					-Monsters Functions-
-var fixedQuestions = [];
 // takes a given monster, searches their available source of categories and
 // outputs a random question of the randomly chosen category
 Monsters.prototype.encounterGenerator = function() {
@@ -259,15 +269,7 @@ Monsters.prototype.encounterGenerator = function() {
 		// run _.reject to filter by difficulty
 		var filteredQuestions = _.reject(questions,function (question){return question.difficulty > monster.difficulty});
 	var triviaObj= _.sample(filteredQuestions);
-	// fixedQuestions = triviaObj.choiceRandomizer();
-	// console.log(fixedQuestions);
-	// var trivia = category.triviaOutput();
-	// var monsterTrivia = trivia.choiceRandomizer()
-	// console.log(monster.difficulty);
-	// console.log(filteredQuestions);
 	return triviaObj;
-	// return triviaObj.str
-	// +" <br> "+fixedQuestions;
 };
 
 
@@ -277,9 +279,6 @@ var availableMonsters = function(pool){
 			return _.sample(pool);
 } 
 
-var encounterDisplay = function () {
-	return
-}
 // 					-Monster Ranks-	
 
 //Mooks are the lowest level of Encounter, should be warm-ups
@@ -290,17 +289,21 @@ var encounterDisplay = function () {
 // ----------------------Variables-----------------------
 	// 					-Ability Definition-
 	var knightBlock = new Ability('Block',block());
+	var rogueCunning = new Ability('Cunning',cunning());
+	var wizardIntuition = new Ability('Intuition', intuition());
     //                  -Character Job Definition-
 
 var knight = new Job('Knight',knightBlock,10);
-var rogue = new Job('Rogue',cunning,8);
-var wizard = new Job('Wizard',intuition,6);
+var rogue = new Job('Rogue',rogueCunning,8);
+var wizard = new Job('Wizard',wizardIntuition,6);
 var sorceress = new Job('Sorceress',cleverness,6);
 var bard = new Job('Bard',dazzle,8);
 var monk = new Job('Monk',blessed,8);
 
 	// 					-Character Definition-
 var kanir = new Character('Kanir',knight);
+var devaio = new Character('Devaio',wizard);
+var shadow = new Character('Shadow',rogue);
 
 
 	// 					-Trivia Definition-
@@ -313,67 +316,417 @@ var marioOrigin = new Trivia("What was Mario's name in the original Donkey Kong 
 
 var gameFIFA2001 = new Trivia("What unusual feature did the game 'FIFA 2001' implement?",5,['A Scratch and Sniff CD',true],[['You could use other CD-ROMs to generate players',false],['It had a mode to play as the coaches and referees',false],['It would lock the player out during half-time and encourage them to go outside',false]]);
 
+var xboxBestSelling = new Trivia("What game is the best selling product of the original XBox?",2,['Halo 2',true],[['Halo 3',false],['Call of Duty:Modern Warfare',false],['Blinx the Time Sweeper',false]]);
 
+var  dynastyWarriors= new Trivia("What genre was the original Dynasty Warrior video game on Playstation?",3,['Fighting',true],[['Beat-Em Up',false],['Strategy',false],['Platformer',false]]);
+
+var  nintendoBaseballOwnership= new Trivia("What major league baseball team does Nintendo of America hold a majority share in?",4,['Seattle Mariners',true],[['Miami Marlins',false],['New York Yankees',false],['Colorado Rockies',false]]);
+
+var  capcomName= new Trivia("What is Capcom short for?",3,['Capsule Computers',true],[['Capsule Computating',false],['Capture Command',false],['Capital Computations',false]]);
+
+var ukBestSeller = new Trivia("What game is the best selling game for the Playstation 1 in the UK?",3,['Rayman',true],[['Tomb Raider',false],['Final Fantasy IX',false],['Crash Bandicoot',false]]);
+
+var  gamecubeBestSeller= new Trivia("What is the best selling game of the Nintendo GameCube?",3,['Super Smash Bros. Melee',true],[['Super Mario Sunshine',false],['Metroid Prime 2',false],['The Legend of Zelda: Wind Waker',false]]);
+
+var  forzaTickets= new Trivia("How many speeding tickets did the development team of the video game Forza Motorsport 2 collectively gain?",6,['41',true],[['42',false],['10',false],['100',false]]);
+
+var  freeComicBookDay= new Trivia("What day is 'Free Comic Book Day' traditionally held in the United States?",1,['The first Saturday of May',true],[['May 4th',false],['The last Saturday of May',false],['December 28th, The birthday of Stan "The Man" Lee',false]]);
+
+var  fontComicSans= new Trivia("What comic book is the font Comic Sans derived from?",3,['Watchmen',true],[['The Dark Knight Returns',false],['Crisis of Infinite Earths',false],['Teenage Mutant Ninja Turtles',false]]);
+
+var  marvelMultiverse= new Trivia("According to the Marvel Comic's Multiverse, our reality is designated: ",5,['Earth-1218',true],[['Earth-616',false],['Earth-199999',false],['Earth-1610',false]]);
+
+var  weaponX= new Trivia("The X-men character Wolverine is a product of the infamous 'Weapon _' project. Which of the following heroes is also considered a product of this program?",0,['Captain America',true],[['Spider-Man',false],['The Punisher',false],['Colossus',false]]);
+
+var  muhammedAli= new Trivia("Boxer Muhammad Ali retired with the following record: ",3,['55 wins, 5 losses',true],[['50 wins, 10 losses',false],['42 wins, 3 losses',false],['50 wins, 6 losses',false]]);
+
+var  firstSuperBowl= new Trivia("The first Super Bowl was played in 1967. What two teams played against each other?",4,['Green Bay Packers and Kansas City Chiefs',true],[['New York Giants and New England Patriots',false],['Pittsburgh Steelers and Oakland Raiders',false],['Buffalo Bills and Miami Dolphins',false]]);
+
+var  olympics2012= new Trivia("What city did the 2012 Summer Olympics take place in?",2,['London',true],[['Toronto',false],['Sochi',false],['Dublin',false]]);
+
+var  tigerWoodsAge= new Trivia("How old was golfer Tiger Woods the first time that he won the Masters?",3,['21',true],[['22',false],['18',false],['25',false]]);
+
+var  olympicSeparation= new Trivia("What year were the Winter and Summer Olympics separated and started to be held on alternating 2 year cycles?",6,['1994',true],[['1990',false],['1978',false],['1986',false]]);
+
+var  nameAvengers= new Trivia("In the comic books, which character came up with the name 'Avengers'",2,['Wasp',true],[['Captain America',false],['The Hulk',false],['Loki',false]]);
+
+var  cameoFrozen= new Trivia("What Disney couple made a cameo appearance in the movie Frozen?",4,['Rapunzel and Flynn',true],[['Ariel and Eric',false],['Snow White and Prince Charming',false],['Pocahontas and John Smith',false]]);
+
+var  genieActor= new Trivia("What famous actor provided the voice of Genie in Disney's 'Aladdin'?",1,['Robin Williams',true],[['Sean Connery',false],['Chris Hemsworth',false],['Danny DeVito',false]]);
+
+var  disneyLastFilm= new Trivia("What was the last movie personally overseen by Walt Disney?",5,['The Jungle Book',true],[['Sleeping Beauty',false],['Toy Story',false],['The Sword in the Stone',false]]);
+
+var  disneyDalmations= new Trivia("How many dalmation puppies are there?",1,['101',true],[['103',false],['1',false],['None any more, Cruella De Vil got all of them',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+// var  = new Trivia("",0,['',true],[['',false],['',false],['',false]]);
+
+// Trivia question sources: GamesRadar, didyouknowcomics.tumblr.com
 	// 					-Categories Definition-
-var disney = new Category('Disney Trivia',[donaldDuckName,aladdinTiger]);
-var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,gameFIFA2001]);
-	
+var disney = new Category('Disney Trivia',[donaldDuckName,aladdinTiger,disneyDalmations,disneyLastFilm,genieActor,cameoFrozen]);
+var videoGames = new Category('Video Game Odd Facts',[pacmanScore,marioOrigin,gameFIFA2001, forzaTickets, gamecubeBestSeller, ukBestSeller, xboxBestSelling, dynastyWarriors, capcomName, nintendoBaseballOwnership]);
+var comicbooks = new Category('Comic Books',[nameAvengers,weaponX,marvelMultiverse,freeComicBookDay,fontComicSans]);	
+var sports = new Category('Sports',[olympics2012,nintendoBaseballOwnership,muhammedAli,gameFIFA2001,firstSuperBowl,tigerWoodsAge]);
+
 	// 					-Monster Ranks-
-var mook = new Rank('Mook',1);
-var elite = new Rank('Elite',3);
+var mook = new Rank('Mook');
+var elite = new Rank('Elite');
+var boss = new Rank('Boss');
 	// 					-Monster Definition-
+<<<<<<< HEAD
 var goblin = new Monsters('Goblin',[disney],2,mook);
 //<<<<<<< HEAD
 var troll = new Monsters('Troll',[videoGames,disney],4,mook);
 //=======
 var troll = new Monsters('Troll',[disney,videoGames],5,elite);
 // >>>>>>> 142d489ed7d04723c1d34622e5d6245f82f55c13
+=======
+
+
+var goblin = new Monsters('Goblin',[disney],2,mook,1);
+var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
+var ogre = new Monsters('Ogre',[disney,videoGames,comicbooks,sports],7,boss,5)
+
+
+>>>>>>> 633dafee178d52b20088d0c78e62ebd9bfac98c8
 
 	// 					-Monster Pool-
-	var firstLevel = [goblin,troll];
+	var firstLevel = [goblin,troll, ogre];
 
 // -------------------------DOM Creation------------------
+
 $(document).on('ready', function() {  
-	$('.placement').append(kanir.create());
-	var postAnEncounter = function () {
-		
-		// On click, randomly selects a monster from the pool of monsters given
-		var currentMonster = availableMonsters(firstLevel)
-		// Choose a question from that monsters pool
-		console.log(currentMonster.rank.health);
-		var activeEncounter = currentMonster.encounterGenerator();
-		var possibleChoices = activeEncounter.choiceRandomizer();
+	$('.generate').hide();
+	$('.reset-game').hide();
+	$('.character').hide()
+	
+	var theKnight = kanir.create();
+	var theWizard = devaio.create();
+	var theRogue = shadow.create();
+// 				-----------DOM Variables---------------
+	
+	var placeArea = $('.placement');
+	var characterDisplay = $('.character-display');
+	
+	var monsterDisplay = $('.encounter-string');
+	var buttonLayout = $('.button-layout');
 
-		var displayChoices = new Answers(possibleChoices);
-		// console.log(displayChoices);
+// 			----------------DOM FUNCTIONS---------------
 	
-		var triviaString = activeEncounter.str;
-		var test = displayChoices.create1();
-	// var btnChoices = 
-		$('.placement').empty();
-		$('.placement').append("You are being questioned by a ").append(currentMonster.create());
-		$('.placement').append(activeEncounter.create());
-		var testState = $('.placement').append(test);
-		$('.placement').append(displayChoices.create2());
-		$('.placement').append(displayChoices.create3());
-		$('.placement').append(displayChoices.create4());
+	var characterSelect = function () {
+		$('.start-game').hide();
+		$('.btn-kanir').show();
+		$('.btn-devaio').show();
+		$('.btn-shadow').show();
+
+	};
+
+	var startGame = function () {
+		characterSelect();
+		$('.start-game').hide();
+	};
+	var characterInfo = function (currentCharacter) {
+			characterDisplay.append(
+			currentCharacter.name+"<br>",
+			"Character Job: "+currentCharacter.job.name+"<br>",
+			"Current Health: "+currentCharacter.job.health)
+	};
+	var monsterInfo = function (currentMonster) {
+		monsterDisplay.empty();
+		monsterDisplay.append(
+			currentMonster.name+"<br>",
+			"Max Trivia Diificulty: "+currentMonster.difficulty+"<br>",
+			"Monster Rank: "+currentMonster.rank.name+"<br>",
+			"Health: "+currentMonster.health
+			);
+	};
+	var characterChoice = function () {
+		$('.character').hide();
+		$('.generate').show();
+		$('.reset-game').show();
+	}
 	
+	var updateHealth = function () {
+		monsterDisplay.empty();
+		characterDisplay.empty();
+		monsterInfo(currentMonster);
+		characterInfo(currentCharacter);
+	}
+	
+	// the function to generate a new encounter
+	var pickAMonster = function () {	
+		currentThreat = firstLevel[0];			
+			 if (currentThreat.health <= 0) 
+				{
+				firstLevel.shift();
+				}
+			if (firstLevel.length <=0) 
+				{
+					endGameCheck();
+				}	
+		currentThreat = firstLevel[0];
+			
+		currentMonster = currentThreat;
+			
+		return currentMonster;
+	};
+	
+	// Checks to see if the pool of monsters is empty, and if so, displays a 
+	// victory message and resets the game after 5 seconds
+	var endGameCheck = function () {
+		if(firstLevel.length <= 0){
+				placeArea.empty();
+				placeArea.append("You Have Beat the game!");
+				_.delay(resetGame,5000);
 		};
+	};
+	// Function to generate questions from the current monster
+	var startEncounter = function (){
+		// Choose a question from that monsters pool
+		var activeEncounter = currentMonster.encounterGenerator();
+	
+		// Of the question choosen, randomizes the answer choices
+		var possibleChoices = activeEncounter.choiceRandomizer();
+	
+		// Constructs the answers into objects
+		var displayChoices = new Answers(possibleChoices);
+
+		placeArea.empty();
+		
+		placeArea.append(
+			"You are being questioned by a ", 
+			currentMonster.create(),
+			activeEncounter.create(),
+			displayChoices.create1(),
+			displayChoices.create2(),
+			displayChoices.create3(),
+			displayChoices.create4()
+		);
+		monsterInfo(currentMonster);
+		answerAddClass();
+	};
+	// Function that picks a monster and if a valid monster is available, generates questions
+	// based on that monster's stats
+	var postAnEncounter = function() {
+		var chris = pickAMonster();
+		if(chris != undefined){
+		startEncounter();
+		};
+	};
+
+	// THIS VERSION WORKS AND IS STABLE
+	// var postAnEncounter = function () {
+	// 	// On click, randomly selects a monster from the pool of monsters given
+	// 	// currentMonster = availableMonsters(firstLevel),
+		
+		
+	// 		currentThreat = firstLevel[0];
+	// 		if (currentThreat.health === 0) {
+	// 		firstLevel.shift();
+	// 		};
+	// 		currentThreat = firstLevel[0];
+	// 		if(currentThreat === undefined){
+	// 			placeArea.empty();
+	// 			placeArea.append("You Have Passed This Level!");
+	// 		}
+	// 		console.log(currentThreat);
+	// 		currentMonster = currentThreat;
+	
+		
+	// 	// Choose a question from that monsters pool
+	// 	var activeEncounter = currentMonster.encounterGenerator();
+	
+	// 	// Of the question choosen, randomizes the answer choices
+	// 	var possibleChoices = activeEncounter.choiceRandomizer();
+	
+	// 	// Constructs the answers into objects
+	// 	var displayChoices = new Answers(possibleChoices);
+
+	// 	placeArea.empty();
+		
+	// 	placeArea.append(
+	// 		"You are being questioned by a ", 
+	// 		currentMonster.create(),
+	// 		activeEncounter.create(),
+	// 		displayChoices.create1(),
+	// 		displayChoices.create2(),
+	// 		displayChoices.create3(),
+	// 		displayChoices.create4()
+	// 	);
+	// 	monsterInfo(currentMonster);
+	// 	answerAddClass();
+	// };
+
+
+	// Displays a new question when run that keeps the current monster in the match
+	// and updates the monsters health as the turns resolve. If the monster is at 0 health
+	// it displays a congratulations message and moves to the next monster in the pool
+	var generateQuestions = function () {
+		var activeEncounter = currentMonster.encounterGenerator();
+	
+		// Of the question choosen, randomizes the answer choices
+		var possibleChoices = activeEncounter.choiceRandomizer();
+	
+		// Constructs the answers into objects
+		var displayChoices = new Answers(possibleChoices);
+
+			placeArea.empty();
+			placeArea.append(
+					"You are still being attacked by a ",
+					currentMonster.create(),
+					activeEncounter.create(),
+					displayChoices.create1(),
+					displayChoices.create2(),
+					displayChoices.create3(),
+					displayChoices.create4()
+				);
+			updateHealth();
+			if (currentMonster.health <= 0) {
+				placeArea.empty();
+				placeArea.append("You Are Victorious!");
+				_.delay(postAnEncounter,2000);
+			};
+			if (currentCharacter.job.health <= 0) {
+				placeArea.empty();
+				placeArea.append("You Have Been DEFEATED!");
+				_.delay(resetGame,5000);
+			}
+			answerAddClass();
+	};
+
+	// adds class to answers and automatically creates a new encounter after 3 seconds
+	var answerAddClass = function () {
+		$('.answer-btn[data-answer="true"]').addClass('correct');
+		$('.answer-btn[data-answer="false"]').addClass('wrong');
+	};
+	// Resets the game and activates hard mode
+	var resetGame = function () {
+		characterDisplay.empty();
+		monsterDisplay.empty();
+		placeArea.empty();
+		knight.health = 10;
+		rogue.health = 8;
+		wizard.health = 6;
+	goblin.health = 2;
+	troll.health = 5;
+	ogre.health = 7;
+		firstLevel=[troll,goblin,ogre];
+
+		$('.generate').hide();
+		$('.reset-game').hide();
+		$('.start-game').show();
+	};
+	var highlightCorrect = function () {
+		$(this).css({
+				'border-color':'red',
+				'border-width': '5px'
+				});
+			$('.wrong').css({
+				'border-color':'blue',
+				'border-width': '5px',
+				'opacity': '0.5'
+			});
+		};
+	var highlightWrong = function () {
+			$('.correct').css({
+				'border-color':'orange',
+				'border-width': '5px'
+				});
+			$('.wrong').css({
+				'border-color':'blue',
+				'border-width': '5px',
+				'opacity': '0.5'
+			});
+
+	};
+
+	// 			--------------DOM CREATION AND MANIPULATION--------------
+
+		// Start button starts the game and hides itself
+	buttonLayout.on('click','.start-game', function (){
+		startGame();
+	});
+
+		
+		// On a click of The Knight during character select, it loads Kanir's stats
+		$('.character-buttons').on('click','.btn-kanir',(function() {
+			currentCharacter = kanir;
+			characterInfo(kanir);
+			characterChoice();
+		})
+		);
+		// On a click of The Wizard during character select, it loads Devaio's stats
+		$('.btn-devaio').click(function () {
+			currentCharacter = devaio;
+			characterInfo(devaio);
+			characterChoice();
+		});
+
+		// On a click of The Rogue during character select, it loads Shadow's stats
+		$('.btn-shadow').click(function () {
+			currentCharacter = shadow;
+			characterInfo(shadow);
+			characterChoice();
+		});
+		
+	
 	// On click, generates a random question for the given monster
-	$('.button-layout').on('click','.btn', function () {
+	buttonLayout.on('click','.generate', function () {
 		postAnEncounter();
+	});
+	
 
-		});
+	buttonLayout.on('click','.test', function () {
+		generateQuestions();
+	});
 
-		// on click, adds the correct or wrong class to the corresponding class
-		$(document).on('click','.answer-btn',function(){
-			$('.answer-btn[data-answer="true"]').addClass('correct');
-			$('.answer-btn[data-answer="false"]').addClass('wrong');
-			_.delay(postAnEncounter,3000);
+		// If the player chooses the right answer, it subtracts a hit point from the monster
+	$(document).on('click','.answer-btn[data-answer="true"]',function(){
+	var monsterTakesHit = currentMonster.health -- ;
+			console.log("CORRECT");
+			var probablity = 1;
+			console.log(probablity);
+			console.log(currentCharacter.job.ability.name);
+			if (currentCharacter.job.ability.name === "Cunning") {
+			cunning(probablity);
+			console.log(cunning);
+			};
 
-		
-		});
-		
+			monsterTakesHit;
+			console.log(currentMonster.health)
+			
+			highlightCorrect();
+			_.delay(generateQuestions,3000);
+
+
+	});
+	// If the answer chosen is wrong, it subtracts health from the player
+	$(document).on('click','.answer-btn[data-answer="false"]',function(){
+			console.log("WRONG");
+			var playerTakesHit = currentCharacter.job.health -- ;
+			probablity = 1;
+			console.log(probablity);
+			if (currentCharacter.job.ability.name === "Block") {
+			block(probablity);
+			};
+			// currentCharacter.job.health --
+			playerTakesHit;
+			console.log(currentCharacter.job.health)
+			highlightWrong();
+				_.delay(generateQuestions,3000);
+
+	});
+
+
+
+	// Reset the game
+	buttonLayout.on('click','.reset-game', function (){
+		resetGame();
+	});	
+
 
 
 

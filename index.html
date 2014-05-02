@@ -19,17 +19,30 @@
 		<li class="list-group-item">Explore some Locations</li>
 	</div>
 	<div class="button-layout">
-		<button type="button"  class="btn btn-primary generate">Generate a Question</button>
+		<button type="button" class="btn btn-success start-game"> Start Game</button>
+		<button type="button"  class="btn btn-warning generate">Start The Level</button>
+		<button type="button" class="btn btn-reset btn-danger reset-game">Reset Game Session</button>
+		<button type="button" class="btn test">TEST</button>
+			<div class="character-buttons">
+				<button type="button" class="btn-info character btn-kanir">The Knight</button>
+				<button type="button" class="btn-info character btn-devaio">The Wizard</button>
+				<button type="button" class="btn-info character btn-shadow">The Rogue</button>
+
+			</div>
 	</div>
 	
-	<div class="game-area">
-		<div class="col-xs-10 play">
+	
+	<div class="game-area row">
+		<div class="col-xs-2 character-display col-xs-offset-1"></div>
+		<div class="col-xs-6 play">
 			<div class="question-area">
 					<div class="placement"></div>
-						<div class="encounter-string"> </div>
+						
 			</div>
 		</div>
+		<div class="col-xs-2 encounter-string"> </div>
 	</div>
+
 	
 
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
