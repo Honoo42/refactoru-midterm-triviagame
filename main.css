@@ -13,17 +13,11 @@
   position: center;
 }
 /*CSS Related to the Game Area of The Game*/
-.game-area{
-  /*position: absolute;*/
-  /*width: 100%;*/
-}
+
 .play {
   background-color: black;
   border-radius: 20px;
 
-  /*height: 40em;*/
-  /*width: 50%;*/
-  /*margin: -20.3% 0% 0% 30%;*/
 }
 /*#00BCFF,  */
 .character-display{
@@ -31,25 +25,36 @@
   font-weight: 900;
   color: white;
   border-radius: 0% 25% 20% 20%;
-  /*height: 20em;*/
-  /*width: 20%;*/
-  /*margin: 5% 0% 0% 10%;*/
 }
 
 .question-area {
   color: peachpuff;
 }
 
+.play-area {
+  text-align: center;
+  font-style: italic;
+}
+
+.victory {
+  color: green;
+  font-size: 2em;
+  }
+.defeat {
+  color: red;
+  font-weight: 600;
+}
+.end-game{
+  color: white;
+  font-weight: 800;
+  font-size: 2em;
+}
 .encounter-string{
   background: -webkit-linear-gradient(#FF584D, #80312C);
   opacity: .95;
   font-weight: 900;
   color: black;
   border-radius: 20% 0% 25% 20%;
-
-  /*height: 20em;*/
-  /*width: 15%;*/
-  /*margin: -20.3% 0% 0% 0%;*/
 }
 
 /*Game Control Buttons*/

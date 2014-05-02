@@ -157,6 +157,7 @@ var block = function (probablity){
 	if (probablity >= 0.75) {
 		playerTakesHit = currentCharacter.job.health ++ ;
 	}
+	console.log("Block Activated!");
 };
 // Rogues use their cunning to sometimes deal a critical hit
 // to a monster when they get a question right
@@ -164,6 +165,7 @@ var cunning = function(probablity){
 	if (probablity >= 0.75) {
 		currentMonster.health = currentMonster.health - 1;
 	}
+	console.log("Critical Hit!");
 
 };
 // Wizards can use their high wisdom and intuition to eliminate two wrong answers 
@@ -478,7 +480,7 @@ $(document).on('ready', function() {
 	var endGameCheck = function () {
 		if(firstLevel.length <= 0){
 				placeArea.empty();
-				placeArea.append("You Have Beat the game!");
+				placeArea.append("<p class='play-area end-game'>You Have Beat The Game! Prepare Yourself...</p>");
 				_.delay(resetGame,5000);
 		};
 	};
@@ -589,12 +591,12 @@ $(document).on('ready', function() {
 			updateHealth();
 			if (currentMonster.health <= 0) {
 				placeArea.empty();
-				placeArea.append("You Are Victorious!");
+				placeArea.append("<p class='play-area victory'>You Are Victorious! Loading the Next Encounter...</p>");
 				_.delay(postAnEncounter,2000);
 			};
 			if (currentCharacter.job.health <= 0) {
 				placeArea.empty();
-				placeArea.append("You Have Been DEFEATED!");
+				placeArea.append("<p class='play-area defeat'>You Have Been DEFEATED! Read Up On Your Trivia And Try Again!</p>");
 				_.delay(resetGame,5000);
 			}
 			answerAddClass();
@@ -682,6 +684,10 @@ $(document).on('ready', function() {
 			currentCharacter = devaio;
 			characterInfo(devaio);
 			characterChoice();
+	var intuitionButton = $('.character-display').append('<button type="button" class="btn-info intuition">Intuition</button>');		
+
+			intuitionButton;
+
 		});
 
 		// On a click of The Rogue during character select, it loads Shadow's stats
@@ -707,11 +713,9 @@ $(document).on('ready', function() {
 	var monsterTakesHit = currentMonster.health -- ;
 			console.log("CORRECT");
 			var probablity = 1;
-			console.log(probablity);
-			console.log(currentCharacter.job.ability.name);
+			// console.log(probablity);
 			if (currentCharacter.job.ability.name === "Cunning") {
 			cunning(probablity);
-			console.log(cunning);
 			};
 
 			monsterTakesHit;
@@ -731,20 +735,33 @@ $(document).on('ready', function() {
 			if (currentCharacter.job.ability.name === "Block") {
 			block(probablity);
 			};
-			// currentCharacter.job.health --
 			playerTakesHit;
 			console.log(currentCharacter.job.health)
 			highlightWrong();
 				_.delay(generateQuestions,3000);
 
 	});
-
+// Demo day/Debug Function to instantly kill the current monster
 	buttonLayout.on('click','.nuke', function () {
-		console.log('Hello');
+		console.log('Enemy NUKE');
 		currentMonster.health = 0;
 		highlightWrong();
 		highlightCorrect();
 		_.delay(generateQuestions,2000);
+	});
+// Demo day/Debug Function to instantly kill the current character
+	buttonLayout.on('click','.self-destruct',function(){
+		console.log('Player NUKED');
+		currentCharacter.job.health = 0;
+		highlightWrong();
+		highlightCorrect();
+		_.delay(generateQuestions,2000);
+	});
+
+// Adds a mock up of the Wizard's Intuition ability
+	$('.character-display').on('click','.intuition', function (){
+		console.log("INTUTION oooooh");
+		highlightCorrect();
 	})
 
 	// Reset the game
