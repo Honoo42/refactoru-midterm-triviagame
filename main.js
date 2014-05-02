@@ -376,22 +376,12 @@ var mook = new Rank('Mook');
 var elite = new Rank('Elite');
 var boss = new Rank('Boss');
 	// 					-Monster Definition-
-<<<<<<< HEAD
-var goblin = new Monsters('Goblin',[disney],2,mook);
-//<<<<<<< HEAD
-var troll = new Monsters('Troll',[videoGames,disney],4,mook);
-//=======
-var troll = new Monsters('Troll',[disney,videoGames],5,elite);
-// >>>>>>> 142d489ed7d04723c1d34622e5d6245f82f55c13
-=======
-
 
 var goblin = new Monsters('Goblin',[disney],2,mook,1);
 var troll = new Monsters('Troll',[disney,videoGames],5,elite,3);
 var ogre = new Monsters('Ogre',[disney,videoGames,comicbooks,sports],7,boss,5)
 
 
->>>>>>> 633dafee178d52b20088d0c78e62ebd9bfac98c8
 
 	// 					-Monster Pool-
 	var firstLevel = [goblin,troll, ogre];
