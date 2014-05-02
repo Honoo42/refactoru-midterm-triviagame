@@ -422,7 +422,12 @@ $(document).on('ready', function() {
 			characterDisplay.append(
 			currentCharacter.name+"<br>",
 			"Character Job: "+currentCharacter.job.name+"<br>",
+			"Job Ability: "+currentCharacter.job.ability.name+"<br>",
 			"Current Health: "+currentCharacter.job.health)
+			$('.character-display').css({ 
+				'padding-top': '1%',
+  				'padding-bottom': '1%'
+  			})
 	};
 	var monsterInfo = function (currentMonster) {
 		monsterDisplay.empty();
@@ -432,6 +437,10 @@ $(document).on('ready', function() {
 			"Monster Rank: "+currentMonster.rank.name+"<br>",
 			"Health: "+currentMonster.health
 			);
+		$('.encounter-string').css({ 
+				'padding-top': '1%',
+  				'padding-bottom': '1%'
+  			})
 	};
 	var characterChoice = function () {
 		$('.character').hide();
@@ -495,6 +504,10 @@ $(document).on('ready', function() {
 			displayChoices.create3(),
 			displayChoices.create4()
 		);
+	$('.question-area').css({ 
+				'padding-top': '2%',
+  				'padding-bottom': '4%'
+  			})
 		monsterInfo(currentMonster);
 		answerAddClass();
 	};
@@ -585,6 +598,10 @@ $(document).on('ready', function() {
 				_.delay(resetGame,5000);
 			}
 			answerAddClass();
+			$('.question-area').css({ 
+				'padding-top': '2%',
+  				'padding-bottom': '4%'
+  			})
 	};
 
 	// adds class to answers and automatically creates a new encounter after 3 seconds
@@ -597,6 +614,18 @@ $(document).on('ready', function() {
 		characterDisplay.empty();
 		monsterDisplay.empty();
 		placeArea.empty();
+		$('.question-area').css({ 
+				'padding-top': '0%',
+  				'padding-bottom': '0%'
+  			})
+		$('.character-display').css({ 
+				'padding-top': '0%',
+  				'padding-bottom': '0%'
+  			})
+		$('.encounter-string').css({ 
+				'padding-top': '0%',
+  				'padding-bottom': '0%'
+  			})
 		knight.health = 10;
 		rogue.health = 8;
 		wizard.health = 6;
@@ -710,7 +739,13 @@ $(document).on('ready', function() {
 
 	});
 
-
+	buttonLayout.on('click','.nuke', function () {
+		console.log('Hello');
+		currentMonster.health = 0;
+		highlightWrong();
+		highlightCorrect();
+		_.delay(generateQuestions,2000);
+	})
 
 	// Reset the game
 	buttonLayout.on('click','.reset-game', function (){

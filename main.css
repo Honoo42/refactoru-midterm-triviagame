@@ -7,9 +7,10 @@
 }
 
 .list-group {
-  width: 30%;
-  /*background-image: url(http://opengameart.org/sites/default/files/styles/medium/public/rockwalledges.png);*/
+/*  width: 30%;
+  background-image: url(http://opengameart.org/sites/default/files/styles/medium/public/rockwalledges.png);*/
   opacity: .75;
+  position: center;
 }
 /*CSS Related to the Game Area of The Game*/
 .game-area{
@@ -24,11 +25,12 @@
   /*width: 50%;*/
   /*margin: -20.3% 0% 0% 30%;*/
 }
+/*#00BCFF,  */
 .character-display{
-  background: -webkit-linear-gradient(#00BCFF, #4355AD);
+  background: -webkit-linear-gradient(#4676B2, #4355AD);
   font-weight: 900;
   color: white;
-  border-radius: 30% 50% 100% 30%;
+  border-radius: 0% 25% 20% 20%;
   /*height: 20em;*/
   /*width: 20%;*/
   /*margin: 5% 0% 0% 10%;*/
@@ -43,7 +45,7 @@
   opacity: .95;
   font-weight: 900;
   color: black;
-  border-radius: 20% 0% 0% 20%;
+  border-radius: 20% 0% 25% 20%;
 
   /*height: 20em;*/
   /*width: 15%;*/
