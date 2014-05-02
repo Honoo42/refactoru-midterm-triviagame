@@ -169,12 +169,12 @@ var cunning = function(probablity){
 // Wizards can use their high wisdom and intuition to eliminate two wrong answers 
 // when the round  begins
 var intuition = function(probablity){ 
-	if (probablity >= 0.75) {
-		wrongChoices.shift();
-		wrongChoices.shift();
-		return wrongChoices;
-	}
-
+	// if (probablity >= 0.75) {
+	// 	wrongChoices.shift();
+	// 	wrongChoices.shift();
+	// 	return wrongChoices;
+	// }
+	return false;
 };
 
 // Sorceress use their intelligence and cleverness to access the monsters
@@ -598,6 +598,9 @@ $(document).on('ready', function() {
 		characterDisplay.empty();
 		monsterDisplay.empty();
 		placeArea.empty();
+		knight.health = 10;
+		rogue.health = 8;
+		wizard.health = 6;
 	goblin.health = 2;
 	troll.health = 5;
 	ogre.health = 7;
@@ -675,7 +678,7 @@ $(document).on('ready', function() {
 	$(document).on('click','.answer-btn[data-answer="true"]',function(){
 	var monsterTakesHit = currentMonster.health -- ;
 			console.log("CORRECT");
-			var probablity = Math.random();
+			var probablity = 1;
 			console.log(probablity);
 			console.log(currentCharacter.job.ability.name);
 			if (currentCharacter.job.ability.name === "Cunning") {
@@ -695,7 +698,8 @@ $(document).on('ready', function() {
 	$(document).on('click','.answer-btn[data-answer="false"]',function(){
 			console.log("WRONG");
 			var playerTakesHit = currentCharacter.job.health -- ;
-			probablity = Math.random();
+			probablity = 1;
+			console.log(probablity);
 			if (currentCharacter.job.ability.name === "Block") {
 			block(probablity);
 			};
