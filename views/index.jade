@@ -1,0 +1,35 @@
+doctype html
+html
+head
+	link(rel="stylesheet",type="text/css",href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css")
+	link(rel="stylesheet",type="text/css",href="main.css")
+body
+	header.page-header
+		h1
+			| Welcome to SPHINX
+			small The Trivia RPG Work-In-Progress
+	.background
+	ul.nav.nav-pills.list-group
+		li.list-group-item Character Info
+		li.list-group-item Monsters
+		li.list-group-item Locations
+	.button-layout
+		button.btn.btn-success.start-game(type='button')  Start Game
+		button.btn.btn-warning.generate(type='button') Start The Level
+		button.btn.btn-reset.btn-danger.reset-game(type='button') Reset Game Session
+		button.btn.test(type='button') TEST
+		button.btn.btn-danger.nuke(type='button') Enemy Nuke
+		button.btn.btn-danger.self-destruct(type='button') Player Nuke
+		.character-buttons
+			button.btn-info.character.btn-kanir(type='button') The Knight
+			button.btn-info.character.btn-devaio(type='button') The Wizard
+			button.btn-info.character.btn-shadow(type='button') The Rogue
+	.game-area.row
+		.col-xs-2.character-display.col-xs-offset-1
+		.col-xs-6.play
+			.question-area
+				.placement
+		.col-xs-2.encounter-string
+	script(src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js")
+	script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js")
+	script(src="main.js")

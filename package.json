@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "4.x",
+    "jade": "1.x",
+    "twitter-bootstrap": "^2.1.1",
+    "underscore": "1.x"
+  }
+}
