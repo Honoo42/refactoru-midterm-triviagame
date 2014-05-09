@@ -516,8 +516,8 @@ $(document).on('ready', function() {
 	// Function that picks a monster and if a valid monster is available, generates questions
 	// based on that monster's stats
 	var postAnEncounter = function() {
-		var chris = pickAMonster();
-		if(chris != undefined){
+		var validMonster = pickAMonster();
+		if(validMonster != undefined){
 		startEncounter();
 		};
 	};
@@ -712,7 +712,7 @@ $(document).on('ready', function() {
 	$(document).on('click','.answer-btn[data-answer="true"]',function(){
 	var monsterTakesHit = currentMonster.health -- ;
 			console.log("CORRECT");
-			var probablity = 1;
+			var probablity = Math.random();
 			// console.log(probablity);
 			if (currentCharacter.job.ability.name === "Cunning") {
 			cunning(probablity);
@@ -730,7 +730,7 @@ $(document).on('ready', function() {
 	$(document).on('click','.answer-btn[data-answer="false"]',function(){
 			console.log("WRONG");
 			var playerTakesHit = currentCharacter.job.health -- ;
-			probablity = 1;
+			probablity = Math.random();
 			console.log(probablity);
 			if (currentCharacter.job.ability.name === "Block") {
 			block(probablity);
@@ -742,21 +742,23 @@ $(document).on('ready', function() {
 
 	});
 // Demo day/Debug Function to instantly kill the current monster
-	buttonLayout.on('click','.nuke', function () {
-		console.log('Enemy NUKE');
-		currentMonster.health = 0;
-		highlightWrong();
-		highlightCorrect();
-		_.delay(generateQuestions,2000);
-	});
+
+	// buttonLayout.on('click','.nuke', function () {
+	// 	console.log('Enemy NUKE');
+	// 	currentMonster.health = 0;
+	// 	highlightWrong();
+	// 	highlightCorrect();
+	// 	_.delay(generateQuestions,2000);
+	// });
 // Demo day/Debug Function to instantly kill the current character
-	buttonLayout.on('click','.self-destruct',function(){
-		console.log('Player NUKED');
-		currentCharacter.job.health = 0;
-		highlightWrong();
-		highlightCorrect();
-		_.delay(generateQuestions,2000);
-	});
+
+	// buttonLayout.on('click','.self-destruct',function(){
+	// 	console.log('Player NUKED');
+	// 	currentCharacter.job.health = 0;
+	// 	highlightWrong();
+	// 	highlightCorrect();
+	// 	_.delay(generateQuestions,2000);
+	// });
 
 // Adds a mock up of the Wizard's Intuition ability
 	$('.character-display').on('click','.intuition', function (){
