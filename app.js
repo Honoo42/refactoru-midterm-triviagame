@@ -1,10 +1,9 @@
 var express = require('express');
 var http = require('http');
-var _ = require('underscore');
 var socketio = require ('socket.io');
 
 // var bootstrap = require('twitter-bootstrap');
-var port = process.env.PORT || 7563
+var port = process.env.PORT || 7563;
 var app = express();
 
 app.set('view engine', 'jade');
@@ -25,5 +24,5 @@ socketio.listen(server).on('connection', function (socket) {
 		console.log('Message Received: ', msg);
 
 		socket.broadcast.emit('message', msg);
-});
+	});
 });

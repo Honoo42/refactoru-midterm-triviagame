@@ -1,4 +1,4 @@
-$(document).on('ready', function() {
+// $(document).on('ready', function() {
 	$(function(){
 		var iosocket = io.connect();
 		var date = new Date().toLocaleTimeString();
@@ -24,4 +24,4 @@ $(document).on('ready', function() {
 				}
 			});
 	});
-});
+// });
