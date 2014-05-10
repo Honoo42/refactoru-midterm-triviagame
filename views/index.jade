@@ -3,6 +3,8 @@ html
 head
 	link(rel="stylesheet",type="text/css",href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css")
 	link(rel="stylesheet",type="text/css",href="main.css")
+	script(src="/socket.io/socket.io.js")
+
 body
 	header.page-header
 		h1
@@ -30,6 +32,14 @@ body
 			.question-area
 				.placement
 		.col-xs-2.encounter-string
+	.incoming-window
+		| Incoming Chat :
+			ul#incomingChatMessages
+	input#outgoingChatMessage(type='text')
+	p
+		| Welcome to my chat program! Write your message in the box above and marvel at the interwebz!
+
 	script(src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js")
 	script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js")
 	script(src="main.js")
+	script(src="chat.js")

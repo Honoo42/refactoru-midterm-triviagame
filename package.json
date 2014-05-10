@@ -5,8 +5,8 @@
   "dependencies": {
     "express": "4.x",
     "jade": "1.x",
-    "socket.io": "^0.9.16",
-    "twitter-bootstrap": "^2.1.1",
+    "socket.io": "0.x",
+    "twitter-bootstrap": "2.x,
     "underscore": "1.x"
   }
 }
