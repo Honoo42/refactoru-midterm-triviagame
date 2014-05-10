@@ -6,6 +6,6 @@
     "express": "4.x",
     "jade": "1.x",
     "socket.io": "0.x",
-    "twitter-bootstrap": "2.x,
+    "twitter-bootstrap": "2.x"
   }
 }
